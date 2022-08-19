@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="wdp1-server:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>wdp1-server</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="wdp1-server-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="wdp1-server:war exploded" />
+    </root>
+  </artifact>
+</component>
