@@ -1,9 +1,6 @@
 package com.example.mall.service;
 
-import com.example.mall.model.bo.AddAdminssBO;
-import com.example.mall.model.bo.AdminLoginBO;
-import com.example.mall.model.bo.SearchAdminsBO;
-import com.example.mall.model.bo.UpdateAdminssBO;
+import com.example.mall.model.bo.*;
 import com.example.mall.model.vo.*;
 
 /**
@@ -40,4 +37,6 @@ public interface AdminService {
     GetAdminsInfoVO getAdminsInfo(Integer id);
 
     UpdateAdminssVO updateAdminss(UpdateAdminssBO updateAdminssBO);
+
+    ChangePwdVO changePwdBO(ChangePwdBO changePwdBO);
 }

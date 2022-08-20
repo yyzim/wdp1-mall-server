@@ -57,4 +57,11 @@
             password=#{admin.password}
         where id = #{admin.id}
     </update>
+
+    <update id="updateAdminPasswordByNameAndPassword">
+        update admin
+        set password=#{newPassword}
+        where name = #{name}
+          and password = #{oldPassword}
+    </update>
 </mapper>

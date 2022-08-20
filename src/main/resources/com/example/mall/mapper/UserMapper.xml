@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mall.mapper.UserMapper">
+    <select id="selectUserListFromUser" resultType="com.example.mall.model.po.UserPO">
+        select id, email, nickname, pwd, recipient, address, phone
+        from user
+    </select>
+
+    <delete id="deleteUserById">
+        delete
+        from user
+        where id = #{id}
+    </delete>
+
+    <select id="selectUserFromUserByWord" resultType="com.example.mall.model.po.UserPO">
+        select id, email, nickname, pwd, recipient, address, phone
+        from user
+        where nickname like "%" #{word} "%"
+    </select>
+</mapper>

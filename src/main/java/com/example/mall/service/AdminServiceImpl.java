@@ -1,10 +1,7 @@
 package com.example.mall.service;
 
 import com.example.mall.mapper.AdminMapper;
-import com.example.mall.model.bo.AddAdminssBO;
-import com.example.mall.model.bo.AdminLoginBO;
-import com.example.mall.model.bo.SearchAdminsBO;
-import com.example.mall.model.bo.UpdateAdminssBO;
+import com.example.mall.model.bo.*;
 import com.example.mall.model.po.AdminPO;
 import com.example.mall.model.vo.*;
 import com.example.mall.util.MybatisUtils;
@@ -150,6 +147,44 @@ public class AdminServiceImpl implements AdminService {
         }
         session.close();
         return updateAdminssVO;
+    }
+
+    @Override
+    public ChangePwdVO changePwdBO(ChangePwdBO changePwdBO) {
+        //操作数据库
+        SqlSession session = MybatisUtils.openSession();
+        AdminMapper mapper = session.getMapper(AdminMapper.class);
+        //解析BO
+        String oldPwd = changePwdBO.getOldPwd();
+        String confirmPwd = changePwdBO.getConfirmPwd();
+        String adminToken = changePwdBO.getAdminToken();
+        String newPwd = changePwdBO.getNewPwd();
+        //VO声明
+        ChangePwdVO changePwdVO = new ChangePwdVO();
+        //验证是否为空
+        if (StringUtils.isBlank(newPwd) || StringUtils.isBlank(oldPwd) || StringUtils.isBlank(confirmPwd)) {
+            changePwdVO.setCode(10000);
+            changePwdVO.setMessage("密码不能为空");
+            return changePwdVO;
+        }
+        //验证confirm是否正确
+        if (!StringUtils.equals(newPwd, confirmPwd)) {
+            changePwdVO.setCode(10000);
+            changePwdVO.setMessage("两次密码不一致");
+            return changePwdVO;
+        }
+        //写入数据库
+        Integer affectedRows = mapper.updateAdminPasswordByNameAndPassword(adminToken, oldPwd, newPwd);
+        if (affectedRows == 0) {
+            changePwdVO.setCode(10000);
+            changePwdVO.setMessage("更改失败");
+            session.rollback();
+        } else {
+            changePwdVO.setCode(0);
+            session.commit();
+        }
+
+        return changePwdVO;
     }
 
     @Override

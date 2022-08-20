@@ -1,10 +1,7 @@
 package com.example.mall.controller;
 
 import com.example.mall.mapper.AdminMapper;
-import com.example.mall.model.bo.AddAdminssBO;
-import com.example.mall.model.bo.AdminLoginBO;
-import com.example.mall.model.bo.SearchAdminsBO;
-import com.example.mall.model.bo.UpdateAdminssBO;
+import com.example.mall.model.bo.*;
 import com.example.mall.model.vo.*;
 import com.example.mall.service.AdminService;
 import com.example.mall.service.AdminServiceImpl;
@@ -22,7 +19,7 @@ import java.io.IOException;
 
 /**
  * @Classname AdminServlet
- * @Description
+ * @Description 负责管理员模块
  * @Date 2022-08-19 16:10
  * @Created by Yang Yi-zhou
  */
@@ -47,7 +44,18 @@ public class AdminServlet extends HttpServlet {
             addAdminss(req, resp);
         } else if ("updateAdminss".equals(targetResource)) {
             updateAdminss(req, resp);
+        } else if ("changePwd".equals(targetResource)) {
+            changePwd(req, resp);
         }
+    }
+
+    private void changePwd(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析载荷到BO
+        ChangePwdBO changePwdBO = getBO(req, ChangePwdBO.class);
+        //把数据更新到数据库
+        ChangePwdVO changePwdVO = adminService.changePwdBO(changePwdBO);
+        //写回响应体
+        resp.getWriter().println(gson.toJson(changePwdVO));
     }
 
     private void updateAdminss(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -163,7 +171,6 @@ public class AdminServlet extends HttpServlet {
      * @return T对象
      */
     private <T> T getBO(HttpServletRequest req, Class<T> clazz) throws IOException {
-        //获取请求中json参数封装到AdminLoginBO中
         //获取请求体参数
         ServletInputStream inputStream = req.getInputStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

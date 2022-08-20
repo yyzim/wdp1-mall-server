@@ -28,4 +28,6 @@ public interface AdminMapper {
     AdminPO selectAdminFromAdminById(@Param("id") Integer id);
 
     Integer updateAdminById(@Param("admin") AdminPO admin);
+
+    Integer updateAdminPasswordByNameAndPassword(@Param("name") String name, @Param("oldPassword") String oldPassword, @Param("newPassword") String newPassword);
 }

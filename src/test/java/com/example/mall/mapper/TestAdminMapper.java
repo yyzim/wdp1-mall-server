@@ -1,6 +1,7 @@
 package com.example.mall.mapper;
 
 import com.example.mall.model.po.AdminPO;
+import com.example.mall.model.po.GoodsPO;
 import com.example.mall.util.MybatisUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,22 @@ import java.util.List;
  * @Created by Yang Yi-zhou
  */
 public class TestAdminMapper {
-    //    selectAdminFromAdminById
+//    selectStockNumFromTableGoodsSpecByGoodsId
+@Test
+public void testSelectStockNumFromTableGoodsSpecByGoodsId() {
+    SqlSession session = MybatisUtils.openSession();
+    GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+    Integer num = mapper.selectStockNumFromTableGoodsSpecByGoodsId(1);
+    System.out.println("num = " + num);
+}
+
+    @Test
+    public void testSelectGoodsFromTableGoodsByTypeId() {
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+        List<GoodsPO> goodsPOS = mapper.selectGoodsFromTableGoodsByTypeId(1);
+        System.out.println("goodsPOS = " + goodsPOS);
+    }
     @Test
     public void testSelectAdminFromAdminById() {
         SqlSession session = MybatisUtils.openSession();
