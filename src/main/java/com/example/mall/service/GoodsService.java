@@ -2,6 +2,7 @@ package com.example.mall.service;
 
 import com.example.mall.model.bo.AddGoodsBO;
 import com.example.mall.model.bo.AddTypeBO;
+import com.example.mall.model.bo.UpdateGoodsBO;
 import com.example.mall.model.vo.*;
 import org.apache.commons.fileupload.FileUploadException;
 
@@ -26,4 +27,10 @@ public interface GoodsService {
     ImgUploadVO imgUpload(HttpServletRequest req, HttpServletResponse resp) throws IOException, FileUploadException;
 
     AddGoodsVO addGoods(AddGoodsBO addGoodsBO);
+
+    UpdateGoodsVO updateGoods(UpdateGoodsBO updateGoodsBO);
+
+    GetGoodsInfoVO getGoodsInfo(int id);
+
+    DeleteGoodsVO deleteGoods(int id);
 }

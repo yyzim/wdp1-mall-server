@@ -3,6 +3,7 @@ package com.example.mall.service;
 import com.example.mall.mapper.GoodsMapper;
 import com.example.mall.model.bo.AddGoodsBO;
 import com.example.mall.model.bo.AddTypeBO;
+import com.example.mall.model.bo.UpdateGoodsBO;
 import com.example.mall.model.po.GoodsPO;
 import com.example.mall.model.po.GoodsSpecPO;
 import com.example.mall.model.po.GoodsTypePO;
@@ -219,5 +220,98 @@ public class GoodsServiceImpl implements GoodsService {
         }
         session.close();
         return addGoodsVO;
+    }
+
+    @Override
+    public UpdateGoodsVO updateGoods(UpdateGoodsBO updateGoodsBO) {
+        //解析BO
+        Integer id = Integer.parseInt(updateGoodsBO.getId());
+        String name = updateGoodsBO.getName();
+        String img = updateGoodsBO.getImg();
+        String desc = updateGoodsBO.getDesc();
+        Integer typeId = updateGoodsBO.getTypeId();
+        List<UpdateGoodsBO.SpecListDTO> specList = updateGoodsBO.getSpecList();
+        //mapper
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+        //先删除原有数据
+        Integer deleteGoodsAffectedRows = mapper.deleteGoodsById(id);
+        Integer deleteGoodsSpecAffectedRows = mapper.deleteGoodsSpecByGoodsId(id);
+        //封装规格信息
+        List<GoodsSpecPO> specPOList = new ArrayList<>();
+        //维护Price字段为最低价格
+        Double minPrice = Double.MAX_VALUE;
+        for (UpdateGoodsBO.SpecListDTO spec : specList) {
+            minPrice = Math.min(minPrice, Double.parseDouble(spec.getUnitPrice()));
+            specPOList.add(new GoodsSpecPO(null, id, spec.getSpecName(), spec.getStockNum(), Double.parseDouble(spec.getUnitPrice())));
+        }
+        //封装商品信息
+        GoodsPO goodsPO = new GoodsPO(id, img, name, desc, minPrice, typeId);
+        //插入数据库
+        Integer insertGoodsAffectedRows = mapper.insertGoodsIntoTableGoods(goodsPO);
+        Integer insertSpecListAffectedRows = mapper.insertGoodsSpecListIntoTableGoodsSpec(specPOList);
+        //VO
+        UpdateGoodsVO updateGoodsVO = new UpdateGoodsVO();
+        //判断一下是否插入成功
+        if (insertGoodsAffectedRows == 0 || insertSpecListAffectedRows != specList.size()) {
+            //插入失败
+            updateGoodsVO.setCode(10000);
+            updateGoodsVO.setMessage("编辑商品失败");
+            session.rollback();
+        } else {
+            updateGoodsVO.setCode(0);
+            session.commit();
+        }
+
+        //关闭资源
+        session.close();
+        return updateGoodsVO;
+    }
+
+    @Override
+    public GetGoodsInfoVO getGoodsInfo(int id) {
+        //mapper
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+        //获取商品信息
+        GoodsPO goodsPO = mapper.selectGoodsById(id);
+        //获取规格信息
+        List<GoodsSpecPO> specList = mapper.selectGoodsSpecListByGoodsId(id);
+        //封装到VO返回
+        GetGoodsInfoVO getGoodsInfoVO = new GetGoodsInfoVO();
+        GetGoodsInfoVO.DataDTO.GoodsDTO goodsDTO = new GetGoodsInfoVO.DataDTO.GoodsDTO(goodsPO.getId(), goodsPO.getImg(), goodsPO.getName(), goodsPO.getDescription(), goodsPO.getTypeId(), goodsPO.getPrice());
+        List<GetGoodsInfoVO.DataDTO.SpecsDTO> specsDTOList = new ArrayList<>();
+        for (GoodsSpecPO spec : specList) {
+            specsDTOList.add(new GetGoodsInfoVO.DataDTO.SpecsDTO(spec.getId(), spec.getName(), spec.getStockNum(), spec.getPrice()));
+        }
+        getGoodsInfoVO.setCode(0);
+        getGoodsInfoVO.setData(new GetGoodsInfoVO.DataDTO(specsDTOList, goodsDTO));
+
+
+        return getGoodsInfoVO;
+    }
+
+    @Override
+    public DeleteGoodsVO deleteGoods(int id) {
+        //mapper
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+        //根据id去删除商品和规格信息
+        Integer deleteGoodsAffectedRows = mapper.deleteGoodsById(id);
+        Integer deleteGoodsSpecAffectedRows = mapper.deleteGoodsSpecByGoodsId(id);
+        //VO
+        DeleteGoodsVO deleteGoodsVO = new DeleteGoodsVO();
+        //判断是否成功
+        if (deleteGoodsAffectedRows != 0) {
+            deleteGoodsVO.setCode(0);
+            session.commit();
+        } else {
+            deleteGoodsVO.setCode(10000);
+            deleteGoodsVO.setMessage("删除失败");
+            session.rollback();
+        }
+
+        session.close();
+        return deleteGoodsVO;
     }
 }

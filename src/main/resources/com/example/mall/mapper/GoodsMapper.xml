@@ -34,7 +34,7 @@
 
     <insert id="insertGoodsIntoTableGoods" useGeneratedKeys="true" keyProperty="id">
         insert into goods(id, img, name, price, type_id, description)
-        values (null, #{goodsPO.img}, #{goodsPO.name}, #{goodsPO.price}, #{goodsPO.typeId}, #{goodsPO.description})
+        values (#{goodsPO.id}, #{goodsPO.img}, #{goodsPO.name}, #{goodsPO.price}, #{goodsPO.typeId}, #{goodsPO.description})
     </insert>
 
     <insert id="insertGoodsSpecListIntoTableGoodsSpec">
@@ -56,4 +56,28 @@
         set price=#{price}
         where id = #{id}
     </update>
+
+    <select id="selectGoodsById" resultType="com.example.mall.model.po.GoodsPO">
+        select id, img, name, description, price, type_id as typeId
+        from goods
+        where id = #{id}
+    </select>
+
+    <select id="selectGoodsSpecListByGoodsId" resultType="com.example.mall.model.po.GoodsSpecPO">
+        select id, goods_id as goodsId, name, stock_num as stockNum, price
+        from goods_spec
+        where goods_id = #{id}
+    </select>
+
+    <delete id="deleteGoodsById">
+        delete
+        from goods
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteGoodsSpecByGoodsId">
+        delete
+        from goods_spec
+        where goods_id = #{goodsId}
+    </delete>
 </mapper>

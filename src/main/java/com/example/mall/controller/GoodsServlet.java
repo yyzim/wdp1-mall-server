@@ -49,8 +49,30 @@ public class GoodsServlet extends HttpServlet {
             getType(req, resp);
         } else if ("getGoodsByType".equals(targetResource)) {
             getGoodsByType(req, resp);
+        } else if ("getGoodsInfo".equals(targetResource)) {
+            getGoodsInfo(req, resp);
+        } else if ("deleteGoods".equals(targetResource)) {
+            deleteGoods(req, resp);
         }
 
+    }
+
+    private void deleteGoods(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //取出id
+        int id = Integer.parseInt(req.getParameter("id"));
+        //根据typeId去数据库取出数据
+        DeleteGoodsVO deleteGoodsVO = goodsService.deleteGoods(id);
+        //响应
+        resp.getWriter().println(gson.toJson(deleteGoodsVO));
+    }
+
+    private void getGoodsInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //取出id
+        int id = Integer.parseInt(req.getParameter("id"));
+        //根据typeId去数据库取出数据
+        GetGoodsInfoVO getGoodsInfoVO = goodsService.getGoodsInfo(id);
+        //响应
+        resp.getWriter().println(gson.toJson(getGoodsInfoVO));
     }
 
     private void getGoodsByType(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -93,6 +115,10 @@ public class GoodsServlet extends HttpServlet {
     private void updateGoods(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //解析载荷
         UpdateGoodsBO updateGoodsBO = ParseUtils.parseToBO(req, UpdateGoodsBO.class);
+        //service
+        UpdateGoodsVO updateGoodsVO = goodsService.updateGoods(updateGoodsBO);
+        //响应
+        resp.getWriter().println(gson.toJson(updateGoodsVO));
     }
 
     private void addGoods(HttpServletRequest req, HttpServletResponse resp) throws IOException {

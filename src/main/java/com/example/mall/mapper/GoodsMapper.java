@@ -31,4 +31,12 @@ public interface GoodsMapper {
     Double selectPriceFromTableGoodsById(@Param("id") Integer id);
 
     Integer updateTableGoodsSetPriceById(@Param("price") Double price, @Param("id") Integer id);
+
+    GoodsPO selectGoodsById(@Param("id") int id);
+
+    List<GoodsSpecPO> selectGoodsSpecListByGoodsId(@Param("id") int id);
+
+    Integer deleteGoodsById(@Param("id") Integer id);
+
+    Integer deleteGoodsSpecByGoodsId(@Param("goodsId") Integer goodsId);
 }
