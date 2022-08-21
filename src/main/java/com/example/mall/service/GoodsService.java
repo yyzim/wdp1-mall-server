@@ -33,4 +33,7 @@ public interface GoodsService {
     GetGoodsInfoVO getGoodsInfo(int id);
 
     DeleteGoodsVO deleteGoods(int id);
+
+    NoReplyMsgVO noReplyMsg();
+
 }

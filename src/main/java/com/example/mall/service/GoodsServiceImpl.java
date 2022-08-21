@@ -1,12 +1,11 @@
 package com.example.mall.service;
 
 import com.example.mall.mapper.GoodsMapper;
+import com.example.mall.mapper.UserMapper;
 import com.example.mall.model.bo.AddGoodsBO;
 import com.example.mall.model.bo.AddTypeBO;
 import com.example.mall.model.bo.UpdateGoodsBO;
-import com.example.mall.model.po.GoodsPO;
-import com.example.mall.model.po.GoodsSpecPO;
-import com.example.mall.model.po.GoodsTypePO;
+import com.example.mall.model.po.*;
 import com.example.mall.model.vo.*;
 import com.example.mall.util.MybatisUtils;
 import org.apache.commons.fileupload.FileItemIterator;
@@ -313,5 +312,38 @@ public class GoodsServiceImpl implements GoodsService {
 
         session.close();
         return deleteGoodsVO;
+    }
+
+    @Override
+    public NoReplyMsgVO noReplyMsg() {
+        //mapper
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+        //获取未回复的留言 未回复的state为1
+        List<MsgPO> msgPOList = mapper.selectNoReplyMsgList();
+        //VO
+        NoReplyMsgVO noReplyMsgVO = new NoReplyMsgVO();
+
+        //set code
+        noReplyMsgVO.setCode(0);
+        //set data
+        List<NoReplyMsgVO.DataDTO> dataDTOList = new ArrayList<>();
+        for (MsgPO msgPO : msgPOList) {
+            //根据goodsIdh获取goodsName
+            GoodsPO goodsPO = mapper.selectGoodsById(msgPO.getGoodsId());
+            String goodsName = goodsPO.getName();
+            //根据userId获取userName
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+            UserPO userPO = userMapper.selectUserById(msgPO.getUserId());
+            String userName = userPO.getNickname();
+
+            //封装
+            dataDTOList.add(new NoReplyMsgVO.DataDTO(msgPO.getId(),msgPO.getUserId(),msgPO.getGoodsId(),msgPO.getContent(),msgPO.getState(),msgPO.getCreateTime().toString(),new NoReplyMsgVO.DataDTO.GoodsDTO(goodsName),new NoReplyMsgVO.DataDTO.UserDTO(userName)));
+        }
+
+        noReplyMsgVO.setData(dataDTOList);
+
+
+        return noReplyMsgVO;
     }
 }

@@ -53,8 +53,17 @@ public class GoodsServlet extends HttpServlet {
             getGoodsInfo(req, resp);
         } else if ("deleteGoods".equals(targetResource)) {
             deleteGoods(req, resp);
+        } else if ("noReplyMsg".equals(targetResource)) {
+            noReplyMsg(req, resp);
         }
 
+    }
+
+    private void noReplyMsg(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //service
+        NoReplyMsgVO noReplyMsgVO = goodsService.noReplyMsg();
+        //响应
+        resp.getWriter().println(gson.toJson(noReplyMsgVO));
     }
 
     private void deleteGoods(HttpServletRequest req, HttpServletResponse resp) throws IOException {

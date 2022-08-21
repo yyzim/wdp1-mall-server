@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mall.mapper.OrderMapper">
+    <select id="selectOrderListByOrderPOWithPage" resultType="com.example.mall.model.po.OrderPO">
+        select id,user_id as userId,nickname,receiver,address,phone,goods_name as goodsName,goods_id as
+        goodsId,spec_name as specName,spec_id as specId,number,amount,state_id as stateId,create_time as
+        createTime,has_comment as hasComment,score from goods_order
+        <where>
+            <if test="orderPO.stateId != null and orderPO.stateId != -1">
+                and state_id = #{orderPO.stateId}
+            </if>
+            <if test="orderPO.goodsName != null">
+                and goods_name = "%"#{orderPO.goodsName}"%"
+            </if>
+            <if test="orderPO.address != null">
+                and address = "%"#{orderPO.address}"%"
+            </if>
+            <if test="orderPO.nickname != null">
+                and nickname = "%"#{orderPO.nickname}"%"
+            </if>
+            <if test="orderPO.id != null">
+                and id = #{orderPO.id}
+            </if>
+            <if test="moneyLimitLow != null">
+                and amount &gt; #{moneyLimitLow}
+            </if>
+            <if test="moneyLimitHigh != null">
+                and amount &lt; #{moneyLimitHigh}
+            </if>
+        </where>
+        limit #{pageSize} offset #{offset}
+    </select>
+
+    <select id="selectOrderTotalNumberByOrderPOWithPage" resultType="java.lang.Integer">
+        select count(*) from goods_order
+        <where>
+            <if test="orderPO.stateId != null and orderPO.stateId != -1">
+                and state_id = #{orderPO.stateId}
+            </if>
+            <if test="orderPO.goodsName != null">
+                and goods_name = "%"#{orderPO.goodsName}"%"
+            </if>
+            <if test="orderPO.address != null">
+                and address = "%"#{orderPO.address}"%"
+            </if>
+            <if test="orderPO.nickname != null">
+                and nickname = "%"#{orderPO.nickname}"%"
+            </if>
+            <if test="orderPO.id != null">
+                and id = #{orderPO.id}
+            </if>
+            <if test="moneyLimitLow != null">
+                and amount &gt; #{moneyLimitLow}
+            </if>
+            <if test="moneyLimitHigh != null">
+                and amount &lt; #{moneyLimitHigh}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOrderById" resultType="com.example.mall.model.po.OrderPO">
+        select id,
+               user_id     as userId,
+               nickname,
+               receiver,
+               address,
+               phone,
+               goods_name  as goodsName,
+               goods_id    as
+                              goodsId,
+               spec_name   as specName,
+               spec_id     as specId,
+               number,
+               amount,
+               state_id    as stateId,
+               create_time as
+                              createTime,
+               has_comment as hasComment,
+               score
+        from goods_order
+        where id = #{id}
+    </select>
+
+    <update id="updateOrderByOrderPO">
+        update goods_order
+        <set>
+            <if test="orderPO.stateId != null">
+                state_id = #{orderPO.stateId},
+            </if>
+            <if test="orderPO.specId != null">
+                spec_id = #{orderPO.specId},
+            </if>
+            <if test="orderPO.number != null">
+                number = #{orderPO.number},
+            </if>
+            <if test="orderPO.amount != null">
+                amount = #{orderPO.amount},
+            </if>
+        </set>
+        where id = #{orderPO.id}
+    </update>
+
+    <delete id="deleteOrderById">
+        delete
+        from goods_order
+        where id = #{id}
+    </delete>
+</mapper>

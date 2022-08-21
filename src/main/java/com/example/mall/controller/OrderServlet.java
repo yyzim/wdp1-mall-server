@@ -1,14 +1,12 @@
 package com.example.mall.controller;
 
-import com.example.mall.model.bo.AddGoodsBO;
-import com.example.mall.model.bo.AddTypeBO;
-import com.example.mall.model.bo.UpdateGoodsBO;
+import com.example.mall.model.bo.ChangeOrderBO;
+import com.example.mall.model.bo.OrdersByPageBO;
 import com.example.mall.model.vo.*;
-import com.example.mall.service.GoodsService;
-import com.example.mall.service.GoodsServiceImpl;
+import com.example.mall.service.OrderSerive;
+import com.example.mall.service.OrderServiceImpl;
 import com.example.mall.util.ParseUtils;
 import com.google.gson.Gson;
-import org.apache.commons.fileupload.FileUploadException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,9 +24,37 @@ import java.io.IOException;
 @WebServlet("/api/admin/order/*")
 public class OrderServlet extends HttpServlet {
     private Gson gson = new Gson();
+    //order service
+    OrderSerive orderSerive = new OrderServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //分发
+        String targetResource = ParseUtils.parseURIToTargetResource(req);
+        if ("order".equals(targetResource)) {
+            order(req, resp);
+        } else if ("deleteOrder".equals(targetResource)) {
+            deleteOrder(req, resp);
+        }
+
+    }
+
+    private void deleteOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析获取参数id
+        Integer id = Integer.parseInt(req.getParameter("id"));
+        //service
+        DeleteOrderVO deleteOrderVO = orderSerive.deleteOrder(id);
+        //响应
+        resp.getWriter().println(gson.toJson(deleteOrderVO));
+    }
+
+    private void order(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析获取参数id
+        Integer id = Integer.parseInt(req.getParameter("id"));
+        //service
+        OrderVO orderVO = orderSerive.order(id);
+        //响应
+        resp.getWriter().println(gson.toJson(orderVO));
     }
 
 
@@ -36,6 +62,30 @@ public class OrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //分发
         String targetResource = ParseUtils.parseURIToTargetResource(req);
+        if ("ordersByPage".equals(targetResource)) {
+            ordersByPage(req, resp);
+        } else if ("changeOrder".equals(targetResource)) {
+            changeOrder(req, resp);
+        }
+    }
+
+    private void changeOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析载荷
+        ChangeOrderBO changeOrderBO = ParseUtils.parseToBO(req, ChangeOrderBO.class);
+        //service
+        ChangeOrderVO changeOrderVO = orderSerive.changeOrder(changeOrderBO);
+        //响应
+        resp.getWriter().println(gson.toJson(changeOrderVO));
+    }
+
+    private void ordersByPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析载荷
+        OrdersByPageBO ordersByPageBO = ParseUtils.parseToBO(req, OrdersByPageBO.class);
+        //service
+        OrdersByPageVO ordersByPageVO = orderSerive.ordersByPage(ordersByPageBO);
+        //响应
+        resp.getWriter().println(gson.toJson(ordersByPageVO));
+
     }
 
 }

@@ -19,4 +19,5 @@ public interface UserMapper {
 
     List<UserPO> selectUserFromUserByWord(@Param("word") String word);
 
+    UserPO selectUserById(@Param("userId") Integer userId);
 }

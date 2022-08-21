@@ -3,6 +3,7 @@ package com.example.mall.mapper;
 import com.example.mall.model.po.GoodsPO;
 import com.example.mall.model.po.GoodsSpecPO;
 import com.example.mall.model.po.GoodsTypePO;
+import com.example.mall.model.po.MsgPO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -39,4 +40,8 @@ public interface GoodsMapper {
     Integer deleteGoodsById(@Param("id") Integer id);
 
     Integer deleteGoodsSpecByGoodsId(@Param("goodsId") Integer goodsId);
+
+    Double selectSpecPriceFromGoodsSpecById(@Param("specId") Integer specId);
+
+    List<MsgPO> selectNoReplyMsgList();
 }
