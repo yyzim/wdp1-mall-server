@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -152,6 +153,10 @@ public class AdminServlet extends HttpServlet {
             adminLoginResultVO.setCode(0);
             String name = adminService.getAdminName(email);
             adminLoginResultVO.setData(new AdminLoginResultVO.DataDTO(name, name));
+
+            //写入session域中 做一个权限控制
+            HttpSession session = req.getSession();
+            session.setAttribute("account", email);
         } else if (code == 404) {
             //登陆失败
             adminLoginResultVO.setCode(1000);
