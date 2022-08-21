@@ -44,4 +44,8 @@ public interface GoodsMapper {
     Double selectSpecPriceFromGoodsSpecById(@Param("specId") Integer specId);
 
     List<MsgPO> selectNoReplyMsgList();
+
+    List<MsgPO> selectRepliedMsgMsgList();
+
+    Integer updateReplyContentAndStateById(@Param("id") Integer id, @Param("replyContent") String replyContent);
 }

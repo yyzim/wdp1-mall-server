@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 public class MsgPO {
     private Integer id;
     private String content;
+    private String replyContent;
     private Integer state;
     private Timestamp createTime;
     private Integer goodsId;

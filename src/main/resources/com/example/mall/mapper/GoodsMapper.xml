@@ -89,8 +89,27 @@
     </select>
 
     <select id="selectNoReplyMsgList" resultType="com.example.mall.model.po.MsgPO">
-        select id, content, state, create_time as createTime, goods_id as goodsId,user_id as userId
+        select id, content, state, create_time as createTime, goods_id as goodsId, user_id as userId
         from goods_msg
         where state = 1;
     </select>
+
+    <select id="selectRepliedMsgMsgList" resultType="com.example.mall.model.po.MsgPO">
+        select id,
+               content,
+               reply_content as replyContent,
+               state,
+               create_time   as createTime,
+               goods_id      as goodsId,
+               user_id       as userId
+        from goods_msg
+        where state = 0;
+    </select>
+
+    <update id="updateReplyContentAndStateById">
+        update goods_msg
+        set reply_content = #{replyContent},
+            state         = 0
+        where id = #{id}
+    </update>
 </mapper>

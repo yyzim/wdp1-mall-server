@@ -4,6 +4,7 @@ import com.example.mall.mapper.GoodsMapper;
 import com.example.mall.mapper.UserMapper;
 import com.example.mall.model.bo.AddGoodsBO;
 import com.example.mall.model.bo.AddTypeBO;
+import com.example.mall.model.bo.ReplyBO;
 import com.example.mall.model.bo.UpdateGoodsBO;
 import com.example.mall.model.po.*;
 import com.example.mall.model.vo.*;
@@ -338,12 +339,71 @@ public class GoodsServiceImpl implements GoodsService {
             String userName = userPO.getNickname();
 
             //封装
-            dataDTOList.add(new NoReplyMsgVO.DataDTO(msgPO.getId(),msgPO.getUserId(),msgPO.getGoodsId(),msgPO.getContent(),msgPO.getState(),msgPO.getCreateTime().toString(),new NoReplyMsgVO.DataDTO.GoodsDTO(goodsName),new NoReplyMsgVO.DataDTO.UserDTO(userName)));
+            dataDTOList.add(new NoReplyMsgVO.DataDTO(msgPO.getId(), msgPO.getUserId(), msgPO.getGoodsId(), msgPO.getContent(), msgPO.getState(), msgPO.getCreateTime().toString(), new NoReplyMsgVO.DataDTO.GoodsDTO(goodsName), new NoReplyMsgVO.DataDTO.UserDTO(userName)));
         }
 
         noReplyMsgVO.setData(dataDTOList);
 
-
         return noReplyMsgVO;
+    }
+
+    @Override
+    public RepliedMsgVO repliedMsg() {
+        //mapper
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+        //获取未回复的留言 未回复的state为1
+        List<MsgPO> msgPOList = mapper.selectRepliedMsgMsgList();
+        //VO
+        RepliedMsgVO repliedMsgVO = new RepliedMsgVO();
+
+        //set code
+        repliedMsgVO.setCode(0);
+        //set data
+        List<RepliedMsgVO.DataDTO> dataDTOList = new ArrayList<>();
+        for (MsgPO msgPO : msgPOList) {
+            //根据goodsIdh获取goodsName
+            GoodsPO goodsPO = mapper.selectGoodsById(msgPO.getGoodsId());
+            String goodsName = goodsPO.getName();
+            //根据userId获取userName
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+            UserPO userPO = userMapper.selectUserById(msgPO.getUserId());
+            String userName = userPO.getNickname();
+
+            //封装
+            dataDTOList.add(new RepliedMsgVO.DataDTO(msgPO.getId(), msgPO.getUserId(), msgPO.getGoodsId(), msgPO.getContent(), msgPO.getReplyContent(), msgPO.getState(), msgPO.getCreateTime().toString(), new RepliedMsgVO.DataDTO.GoodsDTO(goodsName), new RepliedMsgVO.DataDTO.UserDTO(userName)));
+        }
+
+        repliedMsgVO.setData(dataDTOList);
+
+        return repliedMsgVO;
+    }
+
+    @Override
+    public ReplyVO reply(ReplyBO replyBO) {
+        //解析BO
+        Integer msgId = replyBO.getId();
+        String replyContent = replyBO.getContent();
+        //mapper
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+        //更改数据库 需要插入replyContent和state
+        Integer affectRows = mapper.updateReplyContentAndStateById(msgId, replyContent);
+        //VO
+        ReplyVO replyVO = new ReplyVO();
+        if (affectRows == 0) {
+            replyVO.setCode(10000);
+            replyVO.setMessage("回复失败");
+            session.rollback();
+        } else {
+            replyVO.setCode(0);
+            session.commit();
+        }
+
+        //关闭资源
+        session.close();
+
+
+        return replyVO;
     }
 }

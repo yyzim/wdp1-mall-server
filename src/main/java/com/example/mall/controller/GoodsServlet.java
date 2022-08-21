@@ -2,6 +2,7 @@ package com.example.mall.controller;
 
 import com.example.mall.model.bo.AddGoodsBO;
 import com.example.mall.model.bo.AddTypeBO;
+import com.example.mall.model.bo.ReplyBO;
 import com.example.mall.model.bo.UpdateGoodsBO;
 import com.example.mall.model.vo.*;
 import com.example.mall.service.GoodsService;
@@ -55,8 +56,17 @@ public class GoodsServlet extends HttpServlet {
             deleteGoods(req, resp);
         } else if ("noReplyMsg".equals(targetResource)) {
             noReplyMsg(req, resp);
+        } else if ("repliedMsg".equals(targetResource)) {
+            repliedMsg(req, resp);
         }
 
+    }
+
+    private void repliedMsg(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //service
+        RepliedMsgVO repliedMsgVO = goodsService.repliedMsg();
+        //响应
+        resp.getWriter().println(gson.toJson(repliedMsgVO));
     }
 
     private void noReplyMsg(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -117,8 +127,19 @@ public class GoodsServlet extends HttpServlet {
             addGoods(req, resp);
         } else if ("updateGoods".equals(targetResource)) {
             updateGoods(req, resp);
+        } else if ("reply".equals(targetResource)) {
+            reply(req, resp);
         }
 
+    }
+
+    private void reply(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析载荷
+        ReplyBO replyBO= ParseUtils.parseToBO(req, ReplyBO.class);
+        //service
+        ReplyVO replyVO = goodsService.reply(replyBO);
+        //响应
+        resp.getWriter().println(gson.toJson(replyVO));
     }
 
     private void updateGoods(HttpServletRequest req, HttpServletResponse resp) throws IOException {
