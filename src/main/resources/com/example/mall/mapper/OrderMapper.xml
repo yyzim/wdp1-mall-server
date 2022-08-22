@@ -139,7 +139,7 @@
         <!--          and nickname = #{nickname}-->
     </select>
 
-    <insert id="insertOrderPO">
+    <insert id="insertOrderPO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO goods_order (id,
                                  user_id,
                                  nickname,

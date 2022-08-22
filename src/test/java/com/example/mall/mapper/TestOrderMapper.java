@@ -2,6 +2,7 @@ package com.example.mall.mapper;
 
 import com.example.mall.model.po.OrderPO;
 import com.example.mall.util.MybatisUtils;
+import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -13,6 +14,20 @@ import java.util.List;
  * @Created by Yang Yi-zhou
  */
 public class TestOrderMapper {
+
+    @Test
+    public void testInsertOrderPO(){
+        SqlSession session = MybatisUtils.openSession();
+        OrderMapper mapper = session.getMapper(OrderMapper.class);
+
+
+        OrderPO orderPO = new OrderPO();
+        orderPO.setUserId(1002);
+        mapper.insertOrderPO(orderPO);
+
+        System.out.println(orderPO.getId());
+    }
+
 
     @Test
     public void TestSelectOrderListByOrderPOWithPage() {

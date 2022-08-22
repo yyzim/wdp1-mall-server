@@ -162,6 +162,13 @@ public class OrderServiceImpl implements OrderSerive {
         Double amount = num * specPrice;
         //封装进PO里
         orderPO.setAmount(amount);
+
+        //如果由订单状态由1 --> 0 则释放库存
+        OrderPO tmpOrder = mapper.selectOrderById(orderId);
+        if (tmpOrder.getStateId() == 1 && stateId == 0) {
+            goodsMapper.updateGoodsSpecStockNum(tmpOrder.getSpecId(), tmpOrder.getNumber());
+        }
+
         //去修改订单
         Integer updateAffectedRows = mapper.updateOrderByOrderPO(orderPO);
         //VO
@@ -187,7 +194,7 @@ public class OrderServiceImpl implements OrderSerive {
         DeleteOrderVO deleteOrderVO = new DeleteOrderVO();
         deleteOrderVO.setCode(0);
 
-        if (affectedRows != 0 ){
+        if (affectedRows != 0) {
             session.commit();
         }
         session.close();

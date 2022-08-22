@@ -159,7 +159,7 @@
 
     <update id="updateGoodsSpecStockNum">
         update goods_spec
-        set stock_num = stock_num - #{number}
+        set stock_num = (stock_num + (#{number}))
         where id = #{specId};
     </update>
 </mapper>

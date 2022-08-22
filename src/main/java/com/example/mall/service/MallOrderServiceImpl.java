@@ -78,6 +78,9 @@ public class MallOrderServiceImpl implements MallOrderService {
             orderPO.setAmount(amount);
             //设置订单状态为1 //0 未付款 1 未发货 2 已发货 3 已到货
             orderPO.setStateId(1);
+
+            //维护库存容量
+            maintainStockNum(session, orderId, -1 * goodsNum);
             //修改订单状态
             Integer affectedRows = mapper.updateOrderByOrderPO(orderPO);
             if (affectedRows != 0) {
@@ -89,6 +92,17 @@ public class MallOrderServiceImpl implements MallOrderService {
         SettleAccountsVO settleAccountsVO = new SettleAccountsVO(0);
 
         return settleAccountsVO;
+    }
+
+    /**
+     * @param orderId  订单号
+     * @param goodsNum 变化的订单数 -为减少 +为增加
+     */
+    private static void maintainStockNum(SqlSession session, Integer orderId, Integer goodsNum) {
+        //根据orderId获取specId
+        OrderPO tmpOrder = session.getMapper(OrderMapper.class).selectOrderById(orderId);
+        //减少/增加对应规格的数量
+        session.getMapper(GoodsMapper.class).updateGoodsSpecStockNum(tmpOrder.getSpecId(), goodsNum);
     }
 
     @Override
@@ -115,8 +129,11 @@ public class MallOrderServiceImpl implements MallOrderService {
         OrderMapper orderMapper = session.getMapper(OrderMapper.class);
         Integer affectedRows = orderMapper.insertOrderPO(orderPO);
 
-        //减少对应规格的对应数量
-        goodsMapper.updateGoodsSpecStockNum(goodsSpecPO.getId(), num);
+        if (state == 1) {
+            //减少对应规格的对应数量
+            maintainStockNum(session, orderPO.getId(), -1 * num);
+        }
+
 
         //VO
         AddOrderVO addOrderVO = new AddOrderVO();
@@ -160,8 +177,13 @@ public class MallOrderServiceImpl implements MallOrderService {
             //减少订单对应的数量
             GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
             //减少对应规格的对应数量
-            goodsMapper.updateGoodsSpecStockNum(selectOrder.getSpecId(), selectOrder.getNumber());
+            goodsMapper.updateGoodsSpecStockNum(selectOrder.getSpecId(), -1 * selectOrder.getNumber());
         }
+//        if (selectOrder.getStateId() == 0 && stateId == 4) {
+//            GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
+//            //释放对应订单的数量
+//            goodsMapper.updateGoodsSpecStockNum(selectOrder.getSpecId(), selectOrder.getNumber());
+//        }
 
         //更改订单状态
         orderPO.setStateId(stateId);
