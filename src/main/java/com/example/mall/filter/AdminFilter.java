@@ -30,6 +30,8 @@ public class AdminFilter implements Filter {
         //是否可以携带cookie的凭证（目前还不会携带cookie）
         response.setHeader("Access-Control-Allow-Credentials", "true");
 
+        response.setContentType("text/html;charset=utf-8");
+
         //获取当前的uri /api/admin/admin/login
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
@@ -38,9 +40,9 @@ public class AdminFilter implements Filter {
             if (!"/api/admin/admin/login".equals(requestURI)) {
                 //做一个权限控制，看当前已经登陆
                 HttpSession session = request.getSession();
-                String account = (String) session.getAttribute("account");
+                String admin = (String) session.getAttribute("admin");
                 //判断是否已经登陆
-                if (account == null) {
+                if (admin == null) {
                     //未登录
                     response.setContentType("text/html;charset=utf-8");
                     response.getWriter().println("没有权限访问，请先登陆");
@@ -50,7 +52,7 @@ public class AdminFilter implements Filter {
 
         }
 
-        chain.doFilter(req, resp);
+        chain.doFilter(request, response);
     }
 
     public void init(FilterConfig config) throws ServletException {

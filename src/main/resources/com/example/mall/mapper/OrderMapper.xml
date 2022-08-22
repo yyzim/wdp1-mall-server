@@ -107,4 +107,28 @@
         from goods_order
         where id = #{id}
     </delete>
+
+    <select id="selectOrderByStateAndNickname" resultType="com.example.mall.model.po.OrderPO">
+        select id,
+               user_id     as userId,
+               nickname,
+               receiver,
+               address,
+               phone,
+               goods_name  as goodsName,
+               goods_id    as
+                              goodsId,
+               spec_name   as specName,
+               spec_id     as specId,
+               number,
+               amount,
+               state_id    as stateId,
+               create_time as
+                              createTime,
+               has_comment as hasComment,
+               score
+        from goods_order
+        where state_id = #{stateId}
+          and nickname = #{nickname}
+    </select>
 </mapper>

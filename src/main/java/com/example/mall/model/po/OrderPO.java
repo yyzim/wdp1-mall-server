@@ -31,6 +31,6 @@ public class OrderPO {
     //0 未付款 1 未发货 2 已发货 3 已到货
     private Integer stateId;
     private Timestamp createTime;
-    private String hasComment;
+    private Boolean hasComment;
     private Double score;
 }

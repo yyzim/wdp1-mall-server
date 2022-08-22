@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -387,8 +388,10 @@ public class GoodsServiceImpl implements GoodsService {
         //mapper
         SqlSession session = MybatisUtils.openSession();
         GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+
+        Timestamp replyTime = new Timestamp(System.currentTimeMillis());
         //更改数据库 需要插入replyContent和state
-        Integer affectRows = mapper.updateReplyContentAndStateById(msgId, replyContent);
+        Integer affectRows = mapper.updateReplyContentAndStateById(msgId, replyContent, replyTime);
         //VO
         ReplyVO replyVO = new ReplyVO();
         if (affectRows == 0) {

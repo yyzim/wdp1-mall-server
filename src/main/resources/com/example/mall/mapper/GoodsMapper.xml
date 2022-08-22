@@ -11,7 +11,13 @@
     <select id="selectGoodsFromTableGoodsByTypeId" resultType="com.example.mall.model.po.GoodsPO">
         select id, img, name, price, type_id as typeId
         from goods
-        where type_id = #{typeId}
+        <where>
+            <if test="typeId != -1">
+                type_id = #{typeId}
+            </if>
+        </where>
+
+        <!--        where type_id = #{typeId}-->
     </select>
 
     <select id="selectStockNumFromTableGoodsSpecByGoodsId" resultType="java.lang.Integer">
@@ -109,7 +115,33 @@
     <update id="updateReplyContentAndStateById">
         update goods_msg
         set reply_content = #{replyContent},
-            state         = 0
+            state         = 0,
+            reply_time    = #{replyTime}
         where id = #{id}
     </update>
+
+    <select id="selectGoodsListByKeyword" resultType="com.example.mall.model.po.GoodsPO">
+        select id, img, name, description, price, type_id as typeId
+        from goods
+        where name like "%"#{keyword}"%"
+    </select>
+
+    <select id="selectMsgListByGoodsId" resultType="com.example.mall.model.po.MsgPO">
+        select id,
+               content,
+               reply_content as replyContent,
+               state,
+               create_time   as createTime,
+               reply_time    as replyTime,
+               goods_id      as goodsId,
+               user_id       as userId
+        from goods_msg
+        where goods_id = #{goodsId}
+    </select>
+
+    <insert id="insertMsgUseMsgPO">
+        insert into goods_msg(id, reply_content, content, state, create_time, reply_time, goods_id, user_id)
+        values (#{msgPO.id}, #{msgPO.replyContent}, #{msgPO.content}, #{msgPO.state}, #{msgPO.createTime},
+                #{msgPO.replyTime}, #{msgPO.goodsId}, #{msgPO.userId})
+    </insert>
 </mapper>

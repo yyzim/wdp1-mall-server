@@ -20,4 +20,12 @@ public interface UserMapper {
     List<UserPO> selectUserFromUserByWord(@Param("word") String word);
 
     UserPO selectUserById(@Param("userId") Integer userId);
+
+    UserPO selectUserPOByEmailAndPwd(@Param("email") String email, @Param("pwd") String pwd);
+
+    String selectNameByEmail(@Param("email") String email);
+
+    Integer insertUserByUserPO(@Param("userPO") UserPO userPO);
+
+    UserPO selectUserByNickname(@Param("nickname") String nickname);
 }

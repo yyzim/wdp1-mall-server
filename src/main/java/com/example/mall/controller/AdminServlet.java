@@ -156,7 +156,7 @@ public class AdminServlet extends HttpServlet {
 
             //写入session域中 做一个权限控制
             HttpSession session = req.getSession();
-            session.setAttribute("account", email);
+            session.setAttribute("admin", email);
         } else if (code == 404) {
             //登陆失败
             adminLoginResultVO.setCode(1000);

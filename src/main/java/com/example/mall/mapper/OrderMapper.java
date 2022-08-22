@@ -21,4 +21,6 @@ public interface OrderMapper {
     Integer updateOrderByOrderPO(@Param("orderPO") OrderPO orderPO);
 
     Integer deleteOrderById(@Param("id") Integer id);
+
+    List<OrderPO> selectOrderByStateAndNickname(@Param("stateId") int stateId, @Param("nickname") String nickname);
 }

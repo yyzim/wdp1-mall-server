@@ -6,6 +6,7 @@ import com.example.mall.model.po.GoodsTypePO;
 import com.example.mall.model.po.MsgPO;
 import org.apache.ibatis.annotations.Param;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -47,5 +48,11 @@ public interface GoodsMapper {
 
     List<MsgPO> selectRepliedMsgMsgList();
 
-    Integer updateReplyContentAndStateById(@Param("id") Integer id, @Param("replyContent") String replyContent);
+    Integer updateReplyContentAndStateById(@Param("id") Integer id, @Param("replyContent") String replyContent, @Param("replyTime") Timestamp replyTime);
+
+    List<GoodsPO> selectGoodsListByKeyword(@Param("keyword") String keyword);
+
+    List<MsgPO> selectMsgListByGoodsId(@Param("goodsId") Integer goodsId);
+
+    Integer insertMsgUseMsgPO(@Param("msgPO") MsgPO msgPO);
 }

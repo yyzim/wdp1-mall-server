@@ -1,5 +1,6 @@
 package com.example.mall.model.po;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
  */
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class MsgPO {
     private Integer id;
@@ -20,6 +22,7 @@ public class MsgPO {
     private String replyContent;
     private Integer state;
     private Timestamp createTime;
+    private Timestamp replyTime;
     private Integer goodsId;
     private Integer userId;
 }

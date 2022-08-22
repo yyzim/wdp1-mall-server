@@ -25,4 +25,29 @@
         from user
         where id = #{userId}
     </select>
+
+    <select id="selectUserPOByEmailAndPwd" resultType="com.example.mall.model.po.UserPO">
+        select id, email, nickname, pwd, recipient, address, phone
+        from user
+        where email = #{email}
+          and pwd = #{pwd}
+    </select>
+
+    <select id="selectNameByEmail" resultType="java.lang.String">
+        select nickname
+        from user
+        where email = #{email}
+    </select>
+
+    <insert id="insertUserByUserPO">
+        insert into user(id, email, nickname, pwd, recipient, address, phone)
+        values (#{userPO.id}, #{userPO.email}, #{userPO.nickname}, #{userPO.pwd}, #{userPO.recipient},
+                #{userPO.address}, #{userPO.phone})
+    </insert>
+
+    <select id="selectUserByNickname" resultType="com.example.mall.model.po.UserPO">
+        select id, email, nickname, pwd, recipient, address, phone
+        from user
+        where nickname = #{nickname}
+    </select>
 </mapper>
