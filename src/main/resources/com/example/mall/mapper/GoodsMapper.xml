@@ -144,4 +144,22 @@
         values (#{msgPO.id}, #{msgPO.replyContent}, #{msgPO.content}, #{msgPO.state}, #{msgPO.createTime},
                 #{msgPO.replyTime}, #{msgPO.goodsId}, #{msgPO.userId})
     </insert>
+
+    <select id="selectGoodsPOByGoodsSpecId" resultType="com.example.mall.model.po.GoodsPO">
+        select id, img, name, description, price, type_id as typeId
+        from goods
+        where id = (select goods_id from goods_spec where id = #{specId})
+    </select>
+
+    <select id="selectGoodsSpecPOByGoodsSpecId" resultType="com.example.mall.model.po.GoodsSpecPO">
+        select id, goods_id as goodsId, name, stock_num as stockNum, price
+        from goods_spec
+        where id = #{specId}
+    </select>
+
+    <update id="updateGoodsSpecStockNum">
+        update goods_spec
+        set stock_num = stock_num - #{number}
+        where id = #{specId};
+    </update>
 </mapper>

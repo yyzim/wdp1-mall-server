@@ -55,4 +55,10 @@ public interface GoodsMapper {
     List<MsgPO> selectMsgListByGoodsId(@Param("goodsId") Integer goodsId);
 
     Integer insertMsgUseMsgPO(@Param("msgPO") MsgPO msgPO);
+
+    GoodsPO selectGoodsPOByGoodsSpecId(@Param("specId") Integer specId);
+
+    GoodsSpecPO selectGoodsSpecPOByGoodsSpecId(@Param("specId") Integer specId);
+
+    Integer updateGoodsSpecStockNum(@Param("specId") Integer specId, @Param("number") Integer number);
 }

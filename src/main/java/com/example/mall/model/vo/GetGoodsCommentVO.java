@@ -1,5 +1,6 @@
 package com.example.mall.model.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,12 +21,14 @@ public class GetGoodsCommentVO {
     private DataDTO data;
 
     @NoArgsConstructor
+    @AllArgsConstructor
     @Data
     public static class DataDTO {
         private List<CommentListDTO> commentList;
         private Double rate;
 
         @NoArgsConstructor
+        @AllArgsConstructor
         @Data
         public static class CommentListDTO {
             private UserDTO user;
@@ -37,6 +40,7 @@ public class GetGoodsCommentVO {
             private Integer userId;
 
             @NoArgsConstructor
+            @AllArgsConstructor
             @Data
             public static class UserDTO {
                 private String nickname;

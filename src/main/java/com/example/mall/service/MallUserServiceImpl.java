@@ -10,6 +10,9 @@ import com.example.mall.util.MybatisUtils;
 import com.example.mall.util.ParseUtils;
 import org.apache.ibatis.session.SqlSession;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 /**
  * @Classname MallUserServiceImpl
  * @Description
@@ -20,7 +23,7 @@ public class MallUserServiceImpl implements MallUserService {
 
 
     @Override
-    public MallLoginVO login(MallLoginBO mallLoginBO) {
+    public MallLoginVO login(HttpServletRequest req, MallLoginBO mallLoginBO) {
         //解析BO
         String email = mallLoginBO.getEmail();
         String pwd = mallLoginBO.getPwd();
@@ -42,6 +45,9 @@ public class MallUserServiceImpl implements MallUserService {
             //登陆成功
             mallLoginVO.setCode(0);
             mallLoginVO.setData(new MallLoginVO.DataDTO(0, userPO.getNickname(), userPO.getNickname()));
+            //做一个权限控制 把userPO放进session域里
+            HttpSession httpSession = req.getSession();
+            httpSession.setAttribute("user", userPO);
         }
         //关闭资源
         session.close();
@@ -51,7 +57,7 @@ public class MallUserServiceImpl implements MallUserService {
     }
 
     @Override
-    public MallSignupVO signup(MallSignupBO mallSignupBO) {
+    public MallSignupVO signup(HttpServletRequest req, MallSignupBO mallSignupBO) {
         //PO
         UserPO userPO = new UserPO(null, mallSignupBO.getEmail(), mallSignupBO.getNickname(), mallSignupBO.getPwd(), mallSignupBO.getRecipient(), mallSignupBO.getAddress(), mallSignupBO.getPhone());
         //mapper
@@ -59,6 +65,7 @@ public class MallUserServiceImpl implements MallUserService {
         UserMapper mapper = session.getMapper(UserMapper.class);
         //插入数据库
         Integer affectedRows = mapper.insertUserByUserPO(userPO);
+
         //VO
         MallSignupVO mallSignupVO = new MallSignupVO();
         //判断一下
@@ -72,6 +79,9 @@ public class MallUserServiceImpl implements MallUserService {
             mallSignupVO.setCode(0);
             mallSignupVO.setData(new MallSignupVO.DataDTO(0, userPO.getNickname(), userPO.getNickname()));
             session.commit();
+            //做一个权限控制 把userPO放进session域里
+            HttpSession httpSession = req.getSession();
+            httpSession.setAttribute("user", userPO);
         }
 
         //关闭资源

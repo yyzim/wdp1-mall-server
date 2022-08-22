@@ -1,6 +1,11 @@
 package com.example.mall.service;
 
-import com.example.mall.model.vo.GetOrderByStateVO;
+import com.example.mall.model.bo.AddOrderBO;
+import com.example.mall.model.bo.SendCommentBO;
+import com.example.mall.model.bo.SettleAccountsBO;
+import com.example.mall.model.vo.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Classname MallOrderService
@@ -10,4 +15,16 @@ import com.example.mall.model.vo.GetOrderByStateVO;
  */
 public interface MallOrderService {
     GetOrderByStateVO getOrderByState(int state, String token);
+
+    SettleAccountsVO settleAccounts(HttpServletRequest req,SettleAccountsBO settleAccountsBO);
+
+    AddOrderVO addOrder(AddOrderBO addOrderBO);
+
+    PayVO pay(Integer orderId);
+
+    ConfirmReceiveVO confirmReceive(Integer orderId);
+
+    SendCommentVO sendComment(SendCommentBO sendCommentBO);
+
+    DeleteOrderVO deleteOrder(Integer orderId);
 }

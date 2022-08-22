@@ -39,7 +39,7 @@
         where email = #{email}
     </select>
 
-    <insert id="insertUserByUserPO">
+    <insert id="insertUserByUserPO" useGeneratedKeys="true" keyProperty="id" >
         insert into user(id, email, nickname, pwd, recipient, address, phone)
         values (#{userPO.id}, #{userPO.email}, #{userPO.nickname}, #{userPO.pwd}, #{userPO.recipient},
                 #{userPO.address}, #{userPO.phone})

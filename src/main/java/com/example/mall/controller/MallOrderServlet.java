@@ -1,9 +1,10 @@
 package com.example.mall.controller;
 
 
-import com.example.mall.model.vo.GetGoodsByTypeVO;
-import com.example.mall.model.vo.GetOrderByStateVO;
-import com.example.mall.model.vo.MallSearchGoodsVO;
+import com.example.mall.model.bo.AddOrderBO;
+import com.example.mall.model.bo.SendCommentBO;
+import com.example.mall.model.bo.SettleAccountsBO;
+import com.example.mall.model.vo.*;
 import com.example.mall.service.MallGoodsService;
 import com.example.mall.service.MallGoodsServiceImpl;
 import com.example.mall.service.MallOrderService;
@@ -34,9 +35,41 @@ public class MallOrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //分发
         String targetResource = ParseUtils.parseURIToTargetResource(req);
-        if ("".equals(targetResource)) {
-
+        if ("settleAccounts".equals(targetResource)) {
+            settleAccounts(req, resp);
+        } else if ("addOrder".equals(targetResource)) {
+            addOrder(req, resp);
+        } else if ("sendComment".equals(targetResource)) {
+            sendComment(req, resp);
         }
+    }
+
+    private void sendComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析载荷
+        SendCommentBO sendCommentBO = ParseUtils.parseToBO(req, SendCommentBO.class);
+        //service
+        SendCommentVO sendCommentVO = mallOrderService.sendComment(sendCommentBO);
+        //响应
+        resp.getWriter().println(gson.toJson(sendCommentVO));
+    }
+
+    private void addOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析载荷
+        AddOrderBO addOrderBO = ParseUtils.parseToBO(req, AddOrderBO.class);
+        //service
+        AddOrderVO addOrderVO = mallOrderService.addOrder(addOrderBO);
+        //响应
+        resp.getWriter().println(gson.toJson(addOrderVO));
+    }
+
+    private void settleAccounts(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析载荷
+        SettleAccountsBO settleAccountsBO = ParseUtils.parseToBO(req, SettleAccountsBO.class);
+        //service
+        SettleAccountsVO settleAccountsVO = mallOrderService.settleAccounts(req, settleAccountsBO);
+        //响应
+        resp.getWriter().println(gson.toJson(settleAccountsVO));
+
     }
 
     @Override
@@ -45,9 +78,42 @@ public class MallOrderServlet extends HttpServlet {
         String targetResource = ParseUtils.parseURIToTargetResource(req);
         if ("getOrderByState".equals(targetResource)) {
             getOrderByState(req, resp);
+        } else if ("pay".equals(targetResource)) {
+            pay(req, resp);
+        } else if ("confirmReceive".equals(targetResource)) {
+            confirmReceive(req, resp);
+        } else if ("deleteOrder".equals(targetResource)) {
+            deleteOrder(req, resp);
         }
 
 
+    }
+
+    private void deleteOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析参数
+        Integer id = Integer.parseInt(req.getParameter("id"));
+        //service
+        DeleteOrderVO deleteOrderVO = mallOrderService.deleteOrder(id);
+        //响应
+        resp.getWriter().println(gson.toJson(deleteOrderVO));
+    }
+
+    private void confirmReceive(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析参数
+        Integer id = Integer.parseInt(req.getParameter("id"));
+        //service
+        ConfirmReceiveVO confirmReceiveVO = mallOrderService.confirmReceive(id);
+        //响应
+        resp.getWriter().println(gson.toJson(confirmReceiveVO));
+    }
+
+    private void pay(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析参数
+        Integer id = Integer.parseInt(req.getParameter("id"));
+        //service
+        PayVO payVO = mallOrderService.pay(id);
+        //响应
+        resp.getWriter().println(gson.toJson(payVO));
     }
 
     private void getOrderByState(HttpServletRequest req, HttpServletResponse resp) throws IOException {

@@ -50,13 +50,7 @@ public class MallUserServlet extends HttpServlet {
         //解析载荷
         MallSignupBO mallSignupBO = ParseUtils.parseToBO(req, MallSignupBO.class);
         //service
-        MallSignupVO mallSignupVO = mallUserService.signup(mallSignupBO);
-        //权限控制
-        if (mallSignupVO.getCode() == 0) {
-            //登陆成功
-            HttpSession session = req.getSession();
-            session.setAttribute("mall", "mall");
-        }
+        MallSignupVO mallSignupVO = mallUserService.signup(req, mallSignupBO);
         //响应
         resp.getWriter().println(gson.toJson(mallSignupVO));
     }
@@ -65,13 +59,7 @@ public class MallUserServlet extends HttpServlet {
         //解析载荷
         MallLoginBO mallLoginBO = ParseUtils.parseToBO(req, MallLoginBO.class);
         //service
-        MallLoginVO mallLoginVO = mallUserService.login(mallLoginBO);
-        //权限控制
-        if (mallLoginVO.getCode() == 0) {
-            //登陆成功
-            HttpSession session = req.getSession();
-            session.setAttribute("mall", "mall");
-        }
+        MallLoginVO mallLoginVO = mallUserService.login(req, mallLoginBO);
         //响应
         resp.getWriter().println(gson.toJson(mallLoginVO));
     }

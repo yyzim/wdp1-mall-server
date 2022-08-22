@@ -55,9 +55,9 @@ public class MallFilter implements Filter {
                         || "/api/mall/user/signup".equals(requestURI))) {
                     //做一个权限控制，看当前已经登陆
                     HttpSession session = request.getSession();
-                    String mall = (String) session.getAttribute("mall");
+                    String user = (String) session.getAttribute("user");
                     //判断是否已经登陆
-                    if (mall == null) {
+                    if (user == null) {
                         //未登录
                         response.setContentType("text/html;charset=utf-8");
                         response.getWriter().println("没有权限访问，请先登陆");

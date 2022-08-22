@@ -1,12 +1,10 @@
 package com.example.mall.service;
 
 import com.example.mall.mapper.GoodsMapper;
+import com.example.mall.mapper.OrderMapper;
 import com.example.mall.mapper.UserMapper;
 import com.example.mall.model.bo.AskGoodsMsgBO;
-import com.example.mall.model.po.GoodsPO;
-import com.example.mall.model.po.GoodsSpecPO;
-import com.example.mall.model.po.MsgPO;
-import com.example.mall.model.po.UserPO;
+import com.example.mall.model.po.*;
 import com.example.mall.model.vo.*;
 import com.example.mall.util.MybatisUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -112,8 +110,52 @@ public class MallGoodsServiceImpl implements MallGoodsService {
     }
 
     @Override
-    public GetGoodsCommentVO getGoodsComment(int goodsId) {
-        return null;
+    public GetGoodsCommentVO getGoodsComment(Integer goodsId) {
+        //先根据goodsId拿到CommentPOList
+        //mapper
+        SqlSession session = MybatisUtils.openSession();
+        OrderMapper mapper = session.getMapper(OrderMapper.class);
+        //goodsId拿到CommentPOList
+        List<GoodsCommentPO> goodsCommentPOList = mapper.selectGoodsCommentPOListByGoodsId(goodsId);
+        //VO
+        GetGoodsCommentVO getGoodsCommentVO = new GetGoodsCommentVO();
+        //set code
+        getGoodsCommentVO.setCode(0);
+        //commentListDTO
+        List<GetGoodsCommentVO.DataDTO.CommentListDTO> commentListDTOList = new ArrayList<>();
+
+        //rate
+        double rate = 0;
+
+        //PO ->>>
+        for (GoodsCommentPO goodsCommentPO : goodsCommentPOList) {
+            //根据userId 获取 nickname
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+            UserPO userPO = userMapper.selectUserById(goodsCommentPO.getUserId());
+
+            //new UserDTO
+            GetGoodsCommentVO.DataDTO.CommentListDTO.UserDTO userDTO = new GetGoodsCommentVO.DataDTO.CommentListDTO.UserDTO();
+            userDTO.setNickname(userPO.getNickname());
+
+            //根据specId获取specName
+            GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
+            GoodsSpecPO goodsSpecPO = goodsMapper.selectGoodsSpecPOByGoodsSpecId(goodsCommentPO.getSpecId());
+
+
+            commentListDTOList.add(new GetGoodsCommentVO.DataDTO.CommentListDTO(userDTO, goodsCommentPO.getScore(), goodsCommentPO.getId(), goodsSpecPO.getName(), goodsCommentPO.getContent(), goodsCommentPO.getCreateTime().toString(), goodsCommentPO.getUserId()));
+
+            //rate
+            rate += goodsCommentPO.getScore();
+        }
+
+        //计算下rate
+        rate /= goodsCommentPOList.size();
+
+        //set data
+        GetGoodsCommentVO.DataDTO dataDTO = new GetGoodsCommentVO.DataDTO(commentListDTOList, rate);
+        getGoodsCommentVO.setData(dataDTO);
+
+        return getGoodsCommentVO;
     }
 
     @Override

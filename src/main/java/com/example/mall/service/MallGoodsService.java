@@ -18,7 +18,7 @@ public interface MallGoodsService {
 
     MallGetGoodsInfoVO getGoodsInfo(int id);
 
-    GetGoodsCommentVO getGoodsComment(int goodsId);
+    GetGoodsCommentVO getGoodsComment(Integer goodsId);
 
     AskGoodsMsgVO askGoodsMsg(AskGoodsMsgBO askGoodsMsgBO);
 }

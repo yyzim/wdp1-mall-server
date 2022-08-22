@@ -1,5 +1,6 @@
 package com.example.mall.mapper;
 
+import com.example.mall.model.po.GoodsCommentPO;
 import com.example.mall.model.po.OrderPO;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,4 +24,10 @@ public interface OrderMapper {
     Integer deleteOrderById(@Param("id") Integer id);
 
     List<OrderPO> selectOrderByStateAndNickname(@Param("stateId") int stateId, @Param("nickname") String nickname);
+
+    Integer insertOrderPO(@Param("orderPO") OrderPO orderPO);
+
+    Integer insertGoodsCommentPO(@Param("goodsCommentPO") GoodsCommentPO goodsCommentPO);
+
+    List<GoodsCommentPO> selectGoodsCommentPOListByGoodsId(@Param("goodsId") Integer goodsId);
 }

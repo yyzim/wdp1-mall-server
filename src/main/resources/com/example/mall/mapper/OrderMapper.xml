@@ -110,25 +110,74 @@
 
     <select id="selectOrderByStateAndNickname" resultType="com.example.mall.model.po.OrderPO">
         select id,
-               user_id     as userId,
-               nickname,
-               receiver,
-               address,
-               phone,
-               goods_name  as goodsName,
-               goods_id    as
-                              goodsId,
-               spec_name   as specName,
-               spec_id     as specId,
-               number,
-               amount,
-               state_id    as stateId,
-               create_time as
-                              createTime,
-               has_comment as hasComment,
-               score
+        user_id as userId,
+        nickname,
+        receiver,
+        address,
+        phone,
+        goods_name as goodsName,
+        goods_id as
+        goodsId,
+        spec_name as specName,
+        spec_id as specId,
+        number,
+        amount,
+        state_id as stateId,
+        create_time as
+        createTime,
+        has_comment as hasComment,
+        score
         from goods_order
-        where state_id = #{stateId}
-          and nickname = #{nickname}
+        <where>
+            <if test="stateId != -1 and stateId != 4">
+                state_id = #{stateId} and
+            </if>
+            nickname = #{nickname}
+        </where>
+
+        <!--        where state_id = #{stateId}-->
+        <!--          and nickname = #{nickname}-->
+    </select>
+
+    <insert id="insertOrderPO">
+        INSERT INTO goods_order (id,
+                                 user_id,
+                                 nickname,
+                                 receiver,
+                                 address,
+                                 phone,
+                                 goods_name,
+                                 goods_id,
+                                 spec_name,
+                                 spec_id,
+                                 number,
+                                 amount,
+                                 state_id,
+                                 create_time,
+                                 has_comment,
+                                 score)
+        VALUES (#{orderPO.id}, #{orderPO.userId}, #{orderPO.nickname}, #{orderPO.receiver}, #{orderPO.address},
+                #{orderPO.phone}, #{orderPO.goodsName}, #{orderPO.goodsId}, #{orderPO.specName}, #{orderPO.specId},
+                #{orderPO.number}, #{orderPO.amount}, #{orderPO.stateId}, #{orderPO.createTime}, #{orderPO.hasComment},
+                #{orderPO.score})
+    </insert>
+
+    <insert id="insertGoodsCommentPO">
+        insert into goods_comment(id, user_id, order_id, goods_id, spec_id, content, score, create_time)
+        values (#{goodsCommentPO.id}, #{goodsCommentPO.userId}, #{goodsCommentPO.orderId}, #{goodsCommentPO.goodsId},
+                #{goodsCommentPO.specId}, #{goodsCommentPO.content}, #{goodsCommentPO.score}, #{param1.createTime})
+    </insert>
+
+    <select id="selectGoodsCommentPOListByGoodsId" resultType="com.example.mall.model.po.GoodsCommentPO">
+        select id,
+               user_id as userId,
+               order_id as orderId,
+               goods_id as goodsId,
+               spec_id as specId,
+               content,
+               score,
+               create_time as createTime
+        from goods_comment
+        where goods_id = #{goodsId}
     </select>
 </mapper>

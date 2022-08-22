@@ -6,6 +6,8 @@ import com.example.mall.model.bo.MallSignupBO;
 import com.example.mall.model.vo.MallLoginVO;
 import com.example.mall.model.vo.MallSignupVO;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @Classname MallUserService
  * @Description
@@ -15,7 +17,7 @@ import com.example.mall.model.vo.MallSignupVO;
 public interface MallUserService {
 
 
-    MallLoginVO login(MallLoginBO mallLoginBO);
+    MallLoginVO login(HttpServletRequest req,MallLoginBO mallLoginBO);
 
-    MallSignupVO signup(MallSignupBO mallSignupBO);
+    MallSignupVO signup(HttpServletRequest req, MallSignupBO mallSignupBO);
 }

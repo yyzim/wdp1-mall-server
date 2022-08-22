@@ -67,7 +67,7 @@ public class MallGoodsServlet extends HttpServlet {
 
     private void getGoodsComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //解析参数
-        int goodsId = Integer.parseInt(req.getParameter("goodsId"));
+        Integer goodsId = Integer.parseInt(req.getParameter("goodsId"));
         //service
         GetGoodsCommentVO getGoodsCommentVO = mallGoodsService.getGoodsComment(goodsId);
         //响应
