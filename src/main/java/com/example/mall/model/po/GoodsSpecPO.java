@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @Classname GoodsSpecPO
  * @Description
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GoodsSpecPO {
+public class GoodsSpecPO implements Serializable {
     private Integer id;
     private Integer goodsId;
     private String name;

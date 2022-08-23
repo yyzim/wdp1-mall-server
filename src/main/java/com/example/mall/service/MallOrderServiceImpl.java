@@ -67,7 +67,7 @@ public class MallOrderServiceImpl implements MallOrderService {
         }
         //set data
         getOrderByStateVO.setData(dataDTOList);
-
+        session.close();
 
         return getOrderByStateVO;
     }
@@ -220,6 +220,7 @@ public class MallOrderServiceImpl implements MallOrderService {
         changeOrderState(orderId, 1);
 
         payVO.setCode(0);
+        session.close();
 
         return payVO;
     }

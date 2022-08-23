@@ -34,7 +34,7 @@ public class MallIndexServiceImpl implements MallIndexService {
         }
         mallGetTypeVO.setData(dataDTOList);
 
-
+        session.close();
         return mallGetTypeVO;
     }
 }

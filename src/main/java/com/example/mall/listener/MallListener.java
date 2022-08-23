@@ -41,10 +41,6 @@ public class MallListener implements ServletContextListener {
         String front_host = properties.getProperty("front_host");
         System.out.println("front_host = " + front_host);
         servletContext.setAttribute("front_host", front_host);
-        //前台地址
-        String img_host = properties.getProperty("img_host");
-        System.out.println("img_host = " + img_host);
-        servletContext.setAttribute("img_host", img_host);
 
     }
 

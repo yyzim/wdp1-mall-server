@@ -3,6 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mall.mapper.GoodsMapper">
+    <cache type="org.mybatis.caches.redis.RedisCache"/>
+
     <select id="selectAllGoodsTypeFromTableGoodsType" resultType="com.example.mall.model.po.GoodsTypePO">
         select id, name
         from goods_type

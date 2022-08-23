@@ -33,6 +33,8 @@ public class AdminServiceImpl implements AdminService {
             data.add(new AllAdminsVO.DataDTO(admin.getId(), admin.getAccount(), admin.getName(), admin.getPassword()));
         }
         allAdminsVO.setData(data);
+
+        session.close();
         return allAdminsVO;
     }
 
@@ -51,6 +53,7 @@ public class AdminServiceImpl implements AdminService {
             data.add(new SearchAdminsVO.DataVO(admin.getId(), admin.getAccount(), admin.getName(), admin.getPassword()));
         }
         searchAdminsVO.setData(data);
+        session.close();
         return searchAdminsVO;
     }
 
@@ -201,8 +204,10 @@ public class AdminServiceImpl implements AdminService {
         String account = adminLoginBO.getEmail();
         String password = adminLoginBO.getPwd();
         //根据信息查询数据库
-        AdminMapper mapper = MybatisUtils.openSession().getMapper(AdminMapper.class);
+        SqlSession session = MybatisUtils.openSession();
+        AdminMapper mapper = session.getMapper(AdminMapper.class);
         AdminPO adminPO = mapper.selectAdminPOByAccountAndPassword(account, password);
+        session.close();
         //比对信息
         if (adminPO != null && StringUtils.equals(adminPO.getAccount(), account) && StringUtils.equals(adminPO.getPassword(), password)) {
             return 200;

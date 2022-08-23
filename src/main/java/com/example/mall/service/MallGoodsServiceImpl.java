@@ -47,6 +47,8 @@ public class MallGoodsServiceImpl implements MallGoodsService {
         }
         mallSearchGoodsVO.setData(dataDTOList);
 
+        session.close();
+
         return mallSearchGoodsVO;
     }
 
@@ -73,6 +75,8 @@ public class MallGoodsServiceImpl implements MallGoodsService {
         }
         //set data
         getGoodsMsgVO.setData(dataDTOList);
+
+        session.close();
 
 
         return getGoodsMsgVO;
@@ -104,6 +108,8 @@ public class MallGoodsServiceImpl implements MallGoodsService {
 
         //set data
         mallGetGoodsInfoVO.setData(dataDTO);
+
+        session.close();
 
 
         return mallGetGoodsInfoVO;
@@ -159,6 +165,8 @@ public class MallGoodsServiceImpl implements MallGoodsService {
         //set data
         GetGoodsCommentVO.DataDTO dataDTO = new GetGoodsCommentVO.DataDTO(commentListDTOList, rate);
         getGoodsCommentVO.setData(dataDTO);
+
+        session.close();
 
         return getGoodsCommentVO;
     }

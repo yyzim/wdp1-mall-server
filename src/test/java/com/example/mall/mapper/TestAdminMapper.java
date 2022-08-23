@@ -15,14 +15,20 @@ import java.util.List;
  * @Created by Yang Yi-zhou
  */
 public class TestAdminMapper {
-//    selectStockNumFromTableGoodsSpecByGoodsId
-@Test
-public void testSelectStockNumFromTableGoodsSpecByGoodsId() {
-    SqlSession session = MybatisUtils.openSession();
-    GoodsMapper mapper = session.getMapper(GoodsMapper.class);
-    Integer num = mapper.selectStockNumFromTableGoodsSpecByGoodsId(1);
-    System.out.println("num = " + num);
-}
+    //    selectStockNumFromTableGoodsSpecByGoodsId
+    @Test
+    public void testSelectStockNumFromTableGoodsSpecByGoodsId() {
+
+        for (int i = 0; i < 10; i++) {
+            SqlSession session = MybatisUtils.openSession();
+            GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+            long s = System.currentTimeMillis();
+            Integer num = mapper.selectStockNumFromTableGoodsSpecByGoodsId(19);
+            long e = System.currentTimeMillis();
+            System.out.println("num = " + num + ", time = " + (e - s));
+            session.close();
+        }
+    }
 
     @Test
     public void testSelectGoodsFromTableGoodsByTypeId() {
@@ -31,6 +37,7 @@ public void testSelectStockNumFromTableGoodsSpecByGoodsId() {
         List<GoodsPO> goodsPOS = mapper.selectGoodsFromTableGoodsByTypeId(1);
         System.out.println("goodsPOS = " + goodsPOS);
     }
+
     @Test
     public void testSelectAdminFromAdminById() {
         SqlSession session = MybatisUtils.openSession();

@@ -289,7 +289,7 @@ public class GoodsServiceImpl implements GoodsService {
         getGoodsInfoVO.setCode(0);
         getGoodsInfoVO.setData(new GetGoodsInfoVO.DataDTO(specsDTOList, goodsDTO));
 
-
+        session.close();
         return getGoodsInfoVO;
     }
 
@@ -356,6 +356,8 @@ public class GoodsServiceImpl implements GoodsService {
 
         noReplyMsgVO.setData(dataDTOList);
 
+        session.close();
+
         return noReplyMsgVO;
     }
 
@@ -387,6 +389,8 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
         repliedMsgVO.setData(dataDTOList);
+
+        session.close();
 
         return repliedMsgVO;
     }
