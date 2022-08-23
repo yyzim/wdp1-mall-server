@@ -167,7 +167,8 @@ public class GoodsServlet extends HttpServlet {
         //解析载荷
         AddGoodsBO addGoodsBO = ParseUtils.parseToBO(req, AddGoodsBO.class);
         //交给service处理
-        AddGoodsVO addGoodsVO = goodsService.addGoods(addGoodsBO);
+        String serverHost = (String) req.getServletContext().getAttribute("server_host");
+        AddGoodsVO addGoodsVO = goodsService.addGoods(serverHost, addGoodsBO);
         //响应
         resp.getWriter().println(gson.toJson(addGoodsVO));
     }

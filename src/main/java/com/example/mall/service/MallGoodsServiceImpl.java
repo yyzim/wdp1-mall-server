@@ -69,7 +69,7 @@ public class MallGoodsServiceImpl implements MallGoodsService {
             UserMapper mapper = session.getMapper(UserMapper.class);
             UserPO userPO = mapper.selectUserById(msgPO.getUserId());
 
-            dataDTOList.add(new GetGoodsMsgVO.DataDTO(msgPO.getId(), msgPO.getContent(), userPO.getNickname(), msgPO.getCreateTime().toString(), new GetGoodsMsgVO.DataDTO.ReplyDTO(msgPO.getReplyContent(), msgPO.getReplyTime().toString())));
+            dataDTOList.add(new GetGoodsMsgVO.DataDTO(msgPO.getId(), msgPO.getContent(), userPO.getNickname(), msgPO.getCreateTime().toString(), new GetGoodsMsgVO.DataDTO.ReplyDTO(msgPO.getReplyContent(), msgPO.getReplyTime() == null ? null : msgPO.getReplyTime().toString())));
         }
         //set data
         getGoodsMsgVO.setData(dataDTOList);
@@ -141,7 +141,7 @@ public class MallGoodsServiceImpl implements MallGoodsService {
             GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
             GoodsSpecPO goodsSpecPO = goodsMapper.selectGoodsSpecPOByGoodsSpecId(goodsCommentPO.getSpecId());
 
-            if (goodsSpecPO ==  null) {
+            if (goodsSpecPO == null) {
                 //就去specDe里找
                 goodsSpecPO = goodsMapper.selectGoodsSpecPOFromDeByGoodsSpecId(goodsCommentPO.getSpecId());
             }

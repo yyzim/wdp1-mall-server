@@ -137,28 +137,15 @@ public class MallOrderServiceImpl implements MallOrderService {
 
     @Override
     public AddOrderVO addOrder(AddOrderBO addOrderBO) {
+        //根据nickname去拿user信息
+        SqlSession session = MybatisUtils.openSession();
+        UserMapper userMapper = session.getMapper(UserMapper.class);
+
         //解析BO
         String nickname = addOrderBO.getToken();
         Integer goodsDetailId = addOrderBO.getGoodsDetailId();
         Integer num = addOrderBO.getNum();
-        Double amount = addOrderBO.getAmount();
         Integer state = addOrderBO.getState();
-
-        //根据nickname去拿user信息
-        SqlSession session = MybatisUtils.openSession();
-        UserMapper userMapper = session.getMapper(UserMapper.class);
-        UserPO userPO = userMapper.selectUserByNickname(nickname);
-
-        //根据goodsDetailId去拿到商品信息
-        GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
-        GoodsPO goodsPO = goodsMapper.selectGoodsPOByGoodsSpecId(goodsDetailId);
-        GoodsSpecPO goodsSpecPO = goodsMapper.selectGoodsSpecPOByGoodsSpecId(goodsDetailId);
-        //构造一个orderPO
-        OrderPO orderPO = new OrderPO(null, userPO.getId(), userPO.getNickname(), userPO.getRecipient(), userPO.getAddress(), userPO.getPhone(), goodsPO.getName(), goodsPO.getId(), goodsSpecPO.getName(), goodsSpecPO.getId(), num, amount, state, new Timestamp(System.currentTimeMillis()), null, null);
-        //插入数据库
-        OrderMapper orderMapper = session.getMapper(OrderMapper.class);
-        Integer affectedRows = orderMapper.insertOrderPO(orderPO);
-
         //VO
         AddOrderVO addOrderVO = new AddOrderVO();
 
@@ -172,10 +159,30 @@ public class MallOrderServiceImpl implements MallOrderService {
                 session.close();
                 return addOrderVO;
             }
+
+        }
+
+
+        Double amount = addOrderBO.getAmount();
+
+
+        UserPO userPO = userMapper.selectUserByNickname(nickname);
+
+        //根据goodsDetailId去拿到商品信息
+        GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
+        GoodsPO goodsPO = goodsMapper.selectGoodsPOByGoodsSpecId(goodsDetailId);
+        GoodsSpecPO goodsSpecPO = goodsMapper.selectGoodsSpecPOByGoodsSpecId(goodsDetailId);
+        //构造一个orderPO
+        OrderPO orderPO = new OrderPO(null, userPO.getId(), userPO.getNickname(), userPO.getRecipient(), userPO.getAddress(), userPO.getPhone(), goodsPO.getName(), goodsPO.getId(), goodsSpecPO.getName(), goodsSpecPO.getId(), num, amount, state, new Timestamp(System.currentTimeMillis()), null, null);
+        //插入数据库
+        OrderMapper orderMapper = session.getMapper(OrderMapper.class);
+        Integer affectedRows = orderMapper.insertOrderPO(orderPO);
+
+
+        if (state == 1) {
             //减少对应规格的对应数量
             maintainStockNum(session, orderPO.getId(), -1 * num);
         }
-
 
         if (affectedRows == 0) {
             addOrderVO.setCode(10000);

@@ -168,11 +168,11 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public AddGoodsVO addGoods(AddGoodsBO addGoodsBO) {
+    public AddGoodsVO addGoods(String serverHost, AddGoodsBO addGoodsBO) {
         //解析BO
         String name = addGoodsBO.getName();
         //图片需要转发到服务器的地址
-        String img = StringUtils.isBlank(addGoodsBO.getImg()) ? null : "http://localhost:8084" + addGoodsBO.getImg();
+        String img = StringUtils.isBlank(addGoodsBO.getImg()) ? null : serverHost + addGoodsBO.getImg();
         Integer typeId = Integer.parseInt(addGoodsBO.getTypeId());
         String desc = addGoodsBO.getDesc();
         //规格信息

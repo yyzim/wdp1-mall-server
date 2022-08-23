@@ -24,7 +24,7 @@ public interface GoodsService {
 
     ImgUploadVO imgUpload(HttpServletRequest req, HttpServletResponse resp) throws IOException, FileUploadException;
 
-    AddGoodsVO addGoods(AddGoodsBO addGoodsBO);
+    AddGoodsVO addGoods(String serverHost,AddGoodsBO addGoodsBO);
 
     UpdateGoodsVO updateGoods(UpdateGoodsBO updateGoodsBO);
 
