@@ -157,7 +157,10 @@ public class OrderServiceImpl implements OrderSerive {
         //维护amount
         //先获取当前规格的价格
         GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
-        Double specPrice = goodsMapper.selectSpecPriceFromGoodsSpecById(specId);
+        Double specPrice = goodsMapper.selectGoodsSpecPOByGoodsSpecId(specId).getPrice();
+        if (specPrice == null) {
+            specPrice = goodsMapper.selectGoodsSpecPOFromDeByGoodsSpecId(specId).getPrice();
+        }
         //计算当前的总金额
         Double amount = num * specPrice;
         //封装进PO里

@@ -67,4 +67,9 @@ public interface GoodsMapper {
     Integer insertGoodsIntoTableGoodsDe(@Param("goodsPO") GoodsPO goodsPO);
 
 
+    void insertGoodsSpecListIntoTableGoodsSpecDe(@Param("specPOList") List<GoodsSpecPO> specPOList);
+
+    Double selectSpecPriceFromGoodsSpecDeById(@Param("specId") Integer specId);
+
+    GoodsSpecPO selectGoodsSpecPOFromDeByGoodsSpecId(@Param("specId") Integer specId);
 }

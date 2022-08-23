@@ -44,7 +44,7 @@
                 #{goodsPO.description})
     </insert>
 
-    <insert id="insertGoodsSpecListIntoTableGoodsSpec">
+    <insert id="insertGoodsSpecListIntoTableGoodsSpec" useGeneratedKeys="true" keyProperty="id">
         insert into goods_spec(id, goods_id, name, stock_num, price)
         values
         <foreach collection="specPOList" item="spec" separator=",">
@@ -191,5 +191,23 @@
                 #{goodsPO.description})
     </insert>
 
+    <insert id="insertGoodsSpecListIntoTableGoodsSpecDe">
+        insert into goods_spec_de(id, goods_id, name, stock_num, price)
+        values
+        <foreach collection="specPOList" item="spec" separator=",">
+            (null, #{spec.goodsId}, #{spec.name},#{spec.stockNum},#{spec.price})
+        </foreach>
+    </insert>
 
+    <select id="selectSpecPriceFromGoodsSpecDeById" resultType="java.lang.Double">
+        select price
+        from goods_spec_de
+        where id = #{specId}
+    </select>
+
+    <select id="selectGoodsSpecPOFromDeByGoodsSpecId" resultType="com.example.mall.model.po.GoodsSpecPO">
+        select id, goods_id as goodsId, name, stock_num as stockNum, price
+        from goods_spec_de
+        where id = #{specId}
+    </select>
 </mapper>

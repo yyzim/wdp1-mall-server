@@ -100,6 +100,12 @@
             <if test="orderPO.amount != null">
                 amount = #{orderPO.amount},
             </if>
+            <if test="orderPO.hasComment != null">
+                has_comment = #{orderPO.hasComment},
+            </if>
+            <if test="orderPO.score != null">
+                score = #{orderPO.score},
+            </if>
         </set>
         where id = #{orderPO.id}
     </update>

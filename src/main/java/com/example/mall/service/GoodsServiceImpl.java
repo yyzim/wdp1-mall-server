@@ -195,6 +195,8 @@ public class GoodsServiceImpl implements GoodsService {
         }
         //把规格信息插入数据库
         Integer specAffectedRows = mapper.insertGoodsSpecListIntoTableGoodsSpec(specPOList);
+        //冗余一份规格
+        mapper.insertGoodsSpecListIntoTableGoodsSpecDe(specPOList);
         //维护price为规格中的最低价格
         //查询当前的最低价格
         Double curPrice = mapper.selectPriceFromTableGoodsById(goodsId);
@@ -248,6 +250,8 @@ public class GoodsServiceImpl implements GoodsService {
         //插入数据库
         Integer insertGoodsAffectedRows = mapper.insertGoodsIntoTableGoods(goodsPO);
         Integer insertSpecListAffectedRows = mapper.insertGoodsSpecListIntoTableGoodsSpec(specPOList);
+        //冗余一份规格到删除的规格表中
+        mapper.insertGoodsSpecListIntoTableGoodsSpecDe(specPOList);
         //VO
         UpdateGoodsVO updateGoodsVO = new UpdateGoodsVO();
         //判断一下是否插入成功

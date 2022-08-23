@@ -55,6 +55,11 @@ public class MallOrderServiceImpl implements MallOrderService {
             //根据规格id去查规格单价
             Double unitPrice = goodsMapper.selectSpecPriceFromGoodsSpecById(orderPO.getSpecId());
 
+            if (unitPrice == null) {
+                //那就去已删除规格表中查询
+                unitPrice = goodsMapper.selectSpecPriceFromGoodsSpecDeById(orderPO.getSpecId());
+            }
+
             GetOrderByStateVO.DataDTO.GoodsDTO goodsDTO = new GetOrderByStateVO.DataDTO.GoodsDTO(goodsPO.getId(), goodsPO.getImg(), goodsPO.getName(), orderPO.getSpecId(), orderPO.getSpecName(), unitPrice);
 
             dataDTOList.add(new GetOrderByStateVO.DataDTO(orderPO.getId(), orderPO.getStateId(), orderPO.getNumber(), orderPO.getAmount(), orderPO.getGoodsId(), orderPO.getCreateTime().toString(), orderPO.getHasComment(), goodsDTO));
@@ -267,6 +272,12 @@ public class MallOrderServiceImpl implements MallOrderService {
         //插入数据库
         OrderMapper orderMapper = session.getMapper(OrderMapper.class);
         Integer affectedRows = orderMapper.insertGoodsCommentPO(goodsCommentPO);
+        //更新订单状态
+        OrderPO orderPO = new OrderPO();
+        orderPO.setId(orderId);
+        orderPO.setHasComment(true);
+        orderPO.setScore(score * 1.0);
+        orderMapper.updateOrderByOrderPO(orderPO);
         //VO
         SendCommentVO sendCommentVO = new SendCommentVO();
         //session

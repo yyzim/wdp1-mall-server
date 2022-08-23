@@ -141,6 +141,11 @@ public class MallGoodsServiceImpl implements MallGoodsService {
             GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
             GoodsSpecPO goodsSpecPO = goodsMapper.selectGoodsSpecPOByGoodsSpecId(goodsCommentPO.getSpecId());
 
+            if (goodsSpecPO ==  null) {
+                //就去specDe里找
+                goodsSpecPO = goodsMapper.selectGoodsSpecPOFromDeByGoodsSpecId(goodsCommentPO.getSpecId());
+            }
+
 
             commentListDTOList.add(new GetGoodsCommentVO.DataDTO.CommentListDTO(userDTO, goodsCommentPO.getScore(), goodsCommentPO.getId(), goodsSpecPO == null ? null : goodsSpecPO.getName(), goodsCommentPO.getContent(), goodsCommentPO.getCreateTime().toString(), goodsCommentPO.getUserId()));
 
