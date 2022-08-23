@@ -3,11 +3,13 @@ package com.example.mall.service;
 import com.example.mall.mapper.UserMapper;
 import com.example.mall.model.bo.MallLoginBO;
 import com.example.mall.model.bo.MallSignupBO;
+import com.example.mall.model.bo.UpdatePwdBO;
+import com.example.mall.model.bo.UpdateUserDataBO;
 import com.example.mall.model.po.UserPO;
-import com.example.mall.model.vo.MallLoginVO;
-import com.example.mall.model.vo.MallSignupVO;
+import com.example.mall.model.vo.*;
 import com.example.mall.util.MybatisUtils;
 import com.example.mall.util.ParseUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,5 +90,72 @@ public class MallUserServiceImpl implements MallUserService {
         session.close();
 
         return mallSignupVO;
+    }
+
+    @Override
+    public UpdateUserDataVO updateUserData(UpdateUserDataBO updateUserDataBO) {
+        SqlSession session = MybatisUtils.openSession();
+        UserMapper mapper = session.getMapper(UserMapper.class);
+
+        Integer id = updateUserDataBO.getId();
+        String nickname = updateUserDataBO.getNickname();
+        String recipient = updateUserDataBO.getRecipient();
+        String phone = updateUserDataBO.getPhone();
+        String address = updateUserDataBO.getAddress();
+
+        UserPO userPO = new UserPO(id, null, nickname, null, recipient, address, phone);
+        Integer affectedRows = mapper.updateUserWithUserPO(userPO);
+
+        UpdateUserDataVO updateUserDataVO = new UpdateUserDataVO();
+
+        if (affectedRows > 0) {
+            session.commit();
+            updateUserDataVO.setCode(0);
+        } else {
+            session.rollback();
+            updateUserDataVO.setCode(10000);
+            updateUserDataVO.setMessage("修改失败");
+        }
+
+        session.close();
+
+        return updateUserDataVO;
+    }
+
+    @Override
+    public UpdatePwdVO updatePwd(UpdatePwdBO updatePwdBO) {
+        SqlSession session = MybatisUtils.openSession();
+        UserMapper mapper = session.getMapper(UserMapper.class);
+
+        Integer id = updatePwdBO.getId();
+        String oldPwd = updatePwdBO.getOldPwd();
+        String newPwd = updatePwdBO.getNewPwd();
+        String confirmPwd = updatePwdBO.getConfirmPwd();
+
+        UpdatePwdVO updatePwdVO = new UpdatePwdVO();
+
+        if (StringUtils.isBlank(newPwd) || !StringUtils.equals(newPwd, confirmPwd)) {
+            updatePwdVO.setCode(10000);
+            updatePwdVO.setMessage("两次密码不一致");
+            return updatePwdVO;
+        }
+
+        UserPO userPO = new UserPO();
+        userPO.setId(id);
+        userPO.setPwd(newPwd);
+        Integer affectedRows = mapper.updateUserWithUserPO(userPO);
+
+        if (affectedRows > 0) {
+            session.commit();
+            updatePwdVO.setCode(0);
+        } else {
+            session.rollback();
+            updatePwdVO.setCode(10000);
+            updatePwdVO.setMessage("修改失败");
+        }
+
+        session.close();
+
+        return updatePwdVO;
     }
 }

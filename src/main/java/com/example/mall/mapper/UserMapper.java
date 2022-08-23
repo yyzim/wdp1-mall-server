@@ -28,4 +28,6 @@ public interface UserMapper {
     Integer insertUserByUserPO(@Param("userPO") UserPO userPO);
 
     UserPO selectUserByNickname(@Param("nickname") String nickname);
+
+    Integer updateUserWithUserPO(@Param("userPO") UserPO userPO);
 }

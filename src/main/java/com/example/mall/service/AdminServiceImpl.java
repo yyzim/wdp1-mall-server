@@ -188,6 +188,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public LogoutAdminVO logoutAdmin(LogoutAdminBO logoutAdminBO) {
+
+        LogoutAdminVO logoutAdminVO = new LogoutAdminVO();
+        logoutAdminVO.setCode(0);
+        return logoutAdminVO;
+    }
+
+    @Override
     public Integer login(AdminLoginBO adminLoginBO) {
         //解析BO
         String account = adminLoginBO.getEmail();

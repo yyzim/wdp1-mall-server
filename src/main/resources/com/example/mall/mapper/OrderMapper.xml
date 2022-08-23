@@ -29,6 +29,7 @@
             <if test="moneyLimitHigh != null">
                 and amount &lt; #{moneyLimitHigh}
             </if>
+            and state_id != 4
         </where>
         limit #{pageSize} offset #{offset}
     </select>
@@ -57,6 +58,7 @@
             <if test="moneyLimitHigh != null">
                 and amount &lt; #{moneyLimitHigh}
             </if>
+            and state_id != 4
         </where>
     </select>
 
@@ -129,7 +131,7 @@
         score
         from goods_order
         <where>
-            <if test="stateId != -1 and stateId != 4">
+            <if test="stateId != -1">
                 state_id = #{stateId} and
             </if>
             nickname = #{nickname}
@@ -170,10 +172,10 @@
 
     <select id="selectGoodsCommentPOListByGoodsId" resultType="com.example.mall.model.po.GoodsCommentPO">
         select id,
-               user_id as userId,
-               order_id as orderId,
-               goods_id as goodsId,
-               spec_id as specId,
+               user_id     as userId,
+               order_id    as orderId,
+               goods_id    as goodsId,
+               spec_id     as specId,
                content,
                score,
                create_time as createTime

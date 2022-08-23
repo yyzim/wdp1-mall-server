@@ -1,5 +1,7 @@
 package com.example.mall.filter;
 
+import com.example.mall.model.vo.FilterVO;
+import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.*;
@@ -48,25 +50,30 @@ public class MallFilter implements Filter {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
 
-        if (!"OPTIONS".equals(method)) {
-
-            if (StringUtils.contains(requestURI, "/api/mall/user/")) {
-                if (!("/api/mall/user/login".equals(requestURI)
-                        || "/api/mall/user/signup".equals(requestURI))) {
-                    //做一个权限控制，看当前已经登陆
-                    HttpSession session = request.getSession();
-                    String user = (String) session.getAttribute("user");
-                    //判断是否已经登陆
-                    if (user == null) {
-                        //未登录
-                        response.setContentType("text/html;charset=utf-8");
-                        response.getWriter().println("没有权限访问，请先登陆");
-                        return;
-                    }
-                }
-            }
-
-        }
+//        if (!"OPTIONS".equals(method)) {
+//
+//            if (StringUtils.contains(requestURI, "/api/mall/user/")) {
+//                if (!("/api/mall/user/login".equals(requestURI)
+//                        || "/api/mall/user/signup".equals(requestURI))) {
+//                    //做一个权限控制，看当前已经登陆
+//                    HttpSession session = request.getSession();
+//                    Object user =  session.getAttribute("user");
+//                    //判断是否已经登陆
+//                    if (user == null) {
+//                        //未登录
+//                        response.setContentType("text/html;charset=utf-8");
+////                        response.getWriter().println("没有权限访问，请先登陆");
+//
+//                        FilterVO filterVO = new FilterVO();
+//                        filterVO.setCode(10000);
+//                        filterVO.setMessage("没有权限访问，请先登陆");
+//                        response.getWriter().println(new Gson().toJson(filterVO));
+//                        return;
+//                    }
+//                }
+//            }
+//
+//        }
 
         chain.doFilter(request, response);
     }

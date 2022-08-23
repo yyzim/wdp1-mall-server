@@ -2,10 +2,7 @@ package com.example.mall.service;
 
 import com.example.mall.mapper.GoodsMapper;
 import com.example.mall.mapper.UserMapper;
-import com.example.mall.model.bo.AddGoodsBO;
-import com.example.mall.model.bo.AddTypeBO;
-import com.example.mall.model.bo.ReplyBO;
-import com.example.mall.model.bo.UpdateGoodsBO;
+import com.example.mall.model.bo.*;
 import com.example.mall.model.po.*;
 import com.example.mall.model.vo.*;
 import com.example.mall.util.MybatisUtils;
@@ -294,22 +291,32 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public DeleteGoodsVO deleteGoods(int id) {
+
         //mapper
         SqlSession session = MybatisUtils.openSession();
         GoodsMapper mapper = session.getMapper(GoodsMapper.class);
-        //根据id去删除商品和规格信息
-        Integer deleteGoodsAffectedRows = mapper.deleteGoodsById(id);
-        Integer deleteGoodsSpecAffectedRows = mapper.deleteGoodsSpecByGoodsId(id);
+
         //VO
         DeleteGoodsVO deleteGoodsVO = new DeleteGoodsVO();
-        //判断是否成功
-        if (deleteGoodsAffectedRows != 0) {
-            deleteGoodsVO.setCode(0);
-            session.commit();
+
+        GoodsPO goodsPO = mapper.selectGoodsById(id);
+        if (goodsPO != null) {
+            //把商品从goods表中删除 加入到goods_de中
+            Integer insertGoodsAfftecedRows = mapper.insertGoodsIntoTableGoodsDe(goodsPO);
+            //根据id去删除goods表中的商品信息
+            Integer deleteGoodsAffectedRows = mapper.deleteGoodsById(id);
+            //判断是否成功
+            if (deleteGoodsAffectedRows > 0 && insertGoodsAfftecedRows > 0) {
+                deleteGoodsVO.setCode(0);
+                session.commit();
+            } else {
+                deleteGoodsVO.setCode(10000);
+                deleteGoodsVO.setMessage("删除失败");
+                session.rollback();
+            }
         } else {
             deleteGoodsVO.setCode(10000);
-            deleteGoodsVO.setMessage("删除失败");
-            session.rollback();
+            deleteGoodsVO.setMessage("该商品不存在");
         }
 
         session.close();
@@ -408,5 +415,19 @@ public class GoodsServiceImpl implements GoodsService {
 
 
         return replyVO;
+    }
+
+    @Override
+    public AddSpecVO addSpec(AddSpecBO addSpecBO) {
+        //解析
+        Integer goodsId = Integer.parseInt(addSpecBO.getGoodsId());
+        String specName = addSpecBO.getSpecName();
+        Integer stockNum = Integer.parseInt(addSpecBO.getStockNum());
+        Double unitPrice = Double.parseDouble(addSpecBO.getUnitPrice());
+        //VO
+        AddSpecVO addSpecVO = new AddSpecVO(0, new AddSpecVO.DataDTO(goodsId, specName, stockNum, unitPrice));
+
+
+        return addSpecVO;
     }
 }

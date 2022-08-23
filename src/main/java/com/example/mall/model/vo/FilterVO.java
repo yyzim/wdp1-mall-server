@@ -5,16 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Classname SettleAccountsVO
+ * @Classname FilterVO
  * @Description
- * @Date 2022-08-22 15:07
+ * @Date 2022-08-23 10:12
  * @Created by Yang Yi-zhou
  */
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-public class SettleAccountsVO {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class FilterVO {
     private Integer code;
     private String message;
 }

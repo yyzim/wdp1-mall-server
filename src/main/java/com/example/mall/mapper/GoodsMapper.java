@@ -61,4 +61,10 @@ public interface GoodsMapper {
     GoodsSpecPO selectGoodsSpecPOByGoodsSpecId(@Param("specId") Integer specId);
 
     Integer updateGoodsSpecStockNum(@Param("specId") Integer specId, @Param("number") Integer number);
+
+    Integer updateGoodsByGoodsPO(@Param("goodsPO") GoodsPO goodsPO);
+
+    Integer insertGoodsIntoTableGoodsDe(@Param("goodsPO") GoodsPO goodsPO);
+
+
 }

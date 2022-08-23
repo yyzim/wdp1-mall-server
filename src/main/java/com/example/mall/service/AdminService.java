@@ -39,4 +39,6 @@ public interface AdminService {
     UpdateAdminssVO updateAdminss(UpdateAdminssBO updateAdminssBO);
 
     ChangePwdVO changePwdBO(ChangePwdBO changePwdBO);
+
+    LogoutAdminVO logoutAdmin(LogoutAdminBO logoutAdminBO);
 }

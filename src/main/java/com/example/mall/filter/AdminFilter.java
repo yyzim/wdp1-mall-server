@@ -1,5 +1,8 @@
 package com.example.mall.filter;
 
+import com.example.mall.model.vo.FilterVO;
+import com.google.gson.Gson;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +24,7 @@ public class AdminFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
         //哪些来源的主机端口号可以发送请求
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Origin","http://localhost:8085");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:8085");
 
         //可以发往哪些请求的方法
         response.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,PUT,DELETE");
@@ -36,21 +39,27 @@ public class AdminFilter implements Filter {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
 
-        if (!"OPTIONS".equals(method)){
-            if (!"/api/admin/admin/login".equals(requestURI)) {
-                //做一个权限控制，看当前已经登陆
-                HttpSession session = request.getSession();
-                String admin = (String) session.getAttribute("admin");
-                //判断是否已经登陆
-                if (admin == null) {
-                    //未登录
-                    response.setContentType("text/html;charset=utf-8");
-                    response.getWriter().println("没有权限访问，请先登陆");
-                    return;
-                }
-            }
-
-        }
+//        if (!"OPTIONS".equals(method)) {
+//            if (!("/api/admin/admin/login".equals(requestURI)
+//                    || "/api/admin/admin/logoutAdmin".equals(requestURI))) {
+//                //做一个权限控制，看当前已经登陆
+//                HttpSession session = request.getSession();
+//                Object admin = session.getAttribute("admin");
+//                //判断是否已经登陆
+//                if (admin == null) {
+//                    //未登录
+//                    response.setContentType("text/html;charset=utf-8");
+////                    response.getWriter().println("没有权限访问，请先登陆");
+//
+//                    FilterVO filterVO = new FilterVO();
+//                    filterVO.setCode(10000);
+//                    filterVO.setMessage("没有权限访问，请先登陆");
+//                    response.getWriter().println(new Gson().toJson(filterVO));
+//                    return;
+//                }
+//            }
+//
+//        }
 
         chain.doFilter(request, response);
     }

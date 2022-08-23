@@ -1,9 +1,6 @@
 package com.example.mall.service;
 
-import com.example.mall.model.bo.AddGoodsBO;
-import com.example.mall.model.bo.AddTypeBO;
-import com.example.mall.model.bo.ReplyBO;
-import com.example.mall.model.bo.UpdateGoodsBO;
+import com.example.mall.model.bo.*;
 import com.example.mall.model.vo.*;
 import org.apache.commons.fileupload.FileUploadException;
 
@@ -40,4 +37,6 @@ public interface GoodsService {
     RepliedMsgVO repliedMsg();
 
     ReplyVO reply(ReplyBO replyBO);
+
+    AddSpecVO addSpec(AddSpecBO addSpecBO);
 }

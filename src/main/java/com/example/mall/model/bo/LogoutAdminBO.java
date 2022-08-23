@@ -1,20 +1,19 @@
-package com.example.mall.model.vo;
+package com.example.mall.model.bo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Classname SettleAccountsVO
+ * @Classname LogoutAdminBO
  * @Description
- * @Date 2022-08-22 15:07
+ * @Date 2022-08-23 10:18
  * @Created by Yang Yi-zhou
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class SettleAccountsVO {
+public class LogoutAdminBO {
 
-    private Integer code;
-    private String message;
+    private String token;
 }

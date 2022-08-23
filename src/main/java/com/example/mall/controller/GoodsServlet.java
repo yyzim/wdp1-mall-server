@@ -1,9 +1,6 @@
 package com.example.mall.controller;
 
-import com.example.mall.model.bo.AddGoodsBO;
-import com.example.mall.model.bo.AddTypeBO;
-import com.example.mall.model.bo.ReplyBO;
-import com.example.mall.model.bo.UpdateGoodsBO;
+import com.example.mall.model.bo.*;
 import com.example.mall.model.vo.*;
 import com.example.mall.service.GoodsService;
 import com.example.mall.service.GoodsServiceImpl;
@@ -129,13 +126,28 @@ public class GoodsServlet extends HttpServlet {
             updateGoods(req, resp);
         } else if ("reply".equals(targetResource)) {
             reply(req, resp);
+        } else if ("addSpec".equals(targetResource)) {
+            addSpec(req, resp);
+        } else if ("deleteSpec".equals(targetResource)) {
+            deleteSpec(req, resp);
         }
+    }
 
+    private void deleteSpec(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        GeneralVO generalVO = new GeneralVO();
+        generalVO.setCode(0);
+        resp.getWriter().println(gson.toJson(generalVO));
+    }
+
+    private void addSpec(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        AddSpecBO addSpecBO = ParseUtils.parseToBO(req, AddSpecBO.class);
+        AddSpecVO addSpecVO = goodsService.addSpec(addSpecBO);
+        resp.getWriter().println(gson.toJson(addSpecVO));
     }
 
     private void reply(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //解析载荷
-        ReplyBO replyBO= ParseUtils.parseToBO(req, ReplyBO.class);
+        ReplyBO replyBO = ParseUtils.parseToBO(req, ReplyBO.class);
         //service
         ReplyVO replyVO = goodsService.reply(replyBO);
         //响应

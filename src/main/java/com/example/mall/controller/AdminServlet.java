@@ -2,9 +2,12 @@ package com.example.mall.controller;
 
 import com.example.mall.mapper.AdminMapper;
 import com.example.mall.model.bo.*;
+import com.example.mall.model.po.AdminPO;
 import com.example.mall.model.vo.*;
 import com.example.mall.service.AdminService;
 import com.example.mall.service.AdminServiceImpl;
+import com.example.mall.util.MybatisUtils;
+import com.example.mall.util.ParseUtils;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,7 +50,19 @@ public class AdminServlet extends HttpServlet {
             updateAdminss(req, resp);
         } else if ("changePwd".equals(targetResource)) {
             changePwd(req, resp);
+        } else if ("logoutAdmin".equals(targetResource)) {
+            logoutAdmin(req, resp);
         }
+    }
+
+    private void logoutAdmin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析载荷到BO
+        LogoutAdminBO logoutAdminBO = ParseUtils.parseToBO(req, LogoutAdminBO.class);
+        LogoutAdminVO logoutAdminVO = adminService.logoutAdmin(logoutAdminBO);
+        //清除一下session
+        req.getSession().setAttribute("admin", null);
+        //写回响应体
+        resp.getWriter().println(gson.toJson(logoutAdminVO));
     }
 
     private void changePwd(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -154,9 +169,12 @@ public class AdminServlet extends HttpServlet {
             String name = adminService.getAdminName(email);
             adminLoginResultVO.setData(new AdminLoginResultVO.DataDTO(name, name));
 
+            //获取adminPO
+            AdminPO adminPO = MybatisUtils.openSession().getMapper(AdminMapper.class).selectAdminPOByAccountAndPassword(email, pwd);
+
             //写入session域中 做一个权限控制
             HttpSession session = req.getSession();
-            session.setAttribute("admin", email);
+            session.setAttribute("admin", adminPO);
         } else if (code == 404) {
             //登陆失败
             adminLoginResultVO.setCode(1000);

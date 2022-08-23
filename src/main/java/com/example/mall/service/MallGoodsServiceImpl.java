@@ -142,14 +142,14 @@ public class MallGoodsServiceImpl implements MallGoodsService {
             GoodsSpecPO goodsSpecPO = goodsMapper.selectGoodsSpecPOByGoodsSpecId(goodsCommentPO.getSpecId());
 
 
-            commentListDTOList.add(new GetGoodsCommentVO.DataDTO.CommentListDTO(userDTO, goodsCommentPO.getScore(), goodsCommentPO.getId(), goodsSpecPO.getName(), goodsCommentPO.getContent(), goodsCommentPO.getCreateTime().toString(), goodsCommentPO.getUserId()));
+            commentListDTOList.add(new GetGoodsCommentVO.DataDTO.CommentListDTO(userDTO, goodsCommentPO.getScore(), goodsCommentPO.getId(), goodsSpecPO == null ? null : goodsSpecPO.getName(), goodsCommentPO.getContent(), goodsCommentPO.getCreateTime().toString(), goodsCommentPO.getUserId()));
 
             //rate
             rate += goodsCommentPO.getScore();
         }
 
         //计算下rate
-        rate /= goodsCommentPOList.size();
+        rate /= goodsCommentPOList.size() == 0 ? 1 : goodsCommentPOList.size();
 
         //set data
         GetGoodsCommentVO.DataDTO dataDTO = new GetGoodsCommentVO.DataDTO(commentListDTOList, rate);

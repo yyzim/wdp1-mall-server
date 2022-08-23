@@ -25,10 +25,10 @@
         select id,account,name,password from admin
         <where>
             <if test="account != null and account != ''">
-                and account = #{account}
+                and account like "%"#{account}"%"
             </if>
             <if test="name != null and name != ''">
-                and name = #{name}
+                and name like "%"#{name}"%"
             </if>
         </where>
     </select>

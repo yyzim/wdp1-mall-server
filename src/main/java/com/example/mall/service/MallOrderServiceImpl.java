@@ -9,6 +9,7 @@ import com.example.mall.model.bo.SettleAccountsBO;
 import com.example.mall.model.po.*;
 import com.example.mall.model.vo.*;
 import com.example.mall.util.MybatisUtils;
+import com.example.mall.util.ParseUtils;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import org.apache.ibatis.session.SqlSession;
 
@@ -39,10 +40,18 @@ public class MallOrderServiceImpl implements MallOrderService {
         //构造data
         List<GetOrderByStateVO.DataDTO> dataDTOList = new ArrayList<>();
         for (OrderPO orderPO : orderPOList) {
+            //state为4表示已经删除
+            if (orderPO.getStateId() == 4) {
+                continue;
+            }
+
             //拿到详细商品信息
             GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
             //根据id去查询商品的详细信息
             GoodsPO goodsPO = goodsMapper.selectGoodsById(orderPO.getGoodsId());
+            if (goodsPO == null) {
+                continue;
+            }
             //根据规格id去查规格单价
             Double unitPrice = goodsMapper.selectSpecPriceFromGoodsSpecById(orderPO.getSpecId());
 
@@ -62,6 +71,9 @@ public class MallOrderServiceImpl implements MallOrderService {
     public SettleAccountsVO settleAccounts(HttpServletRequest req, SettleAccountsBO settleAccountsBO) {
         //再session域中取出user
         UserPO user = (UserPO) req.getSession().getAttribute("user");
+
+        SettleAccountsVO settleAccountsVO = new SettleAccountsVO();
+
         //解析BO
         List<SettleAccountsBO.CartListDTO> cartList = settleAccountsBO.getCartList();
         for (SettleAccountsBO.CartListDTO cartDTO : cartList) {
@@ -71,6 +83,18 @@ public class MallOrderServiceImpl implements MallOrderService {
             Integer orderId = cartDTO.getId();
             Integer goodsNum = cartDTO.getGoodsNum();
             Double amount = cartDTO.getAmount();
+
+            //检查库存是否足够
+            OrderPO order = mapper.selectOrderById(orderId);
+            Integer stockNum = session.getMapper(GoodsMapper.class).selectGoodsSpecPOByGoodsSpecId(order.getSpecId()).getStockNum();
+            if (goodsNum > stockNum) {
+                settleAccountsVO.setCode(10000);
+                settleAccountsVO.setMessage("库存不足");
+                session.rollback();
+                session.close();
+                return settleAccountsVO;
+            }
+
             //构造一个OrderPO
             OrderPO orderPO = new OrderPO();
             orderPO.setId(orderId);
@@ -81,6 +105,7 @@ public class MallOrderServiceImpl implements MallOrderService {
 
             //维护库存容量
             maintainStockNum(session, orderId, -1 * goodsNum);
+
             //修改订单状态
             Integer affectedRows = mapper.updateOrderByOrderPO(orderPO);
             if (affectedRows != 0) {
@@ -89,7 +114,7 @@ public class MallOrderServiceImpl implements MallOrderService {
             session.close();
         }
         //VO
-        SettleAccountsVO settleAccountsVO = new SettleAccountsVO(0);
+        settleAccountsVO.setCode(0);
 
         return settleAccountsVO;
     }
@@ -129,14 +154,23 @@ public class MallOrderServiceImpl implements MallOrderService {
         OrderMapper orderMapper = session.getMapper(OrderMapper.class);
         Integer affectedRows = orderMapper.insertOrderPO(orderPO);
 
+        //VO
+        AddOrderVO addOrderVO = new AddOrderVO();
+
         if (state == 1) {
+            //检查库存是否足够
+            Integer stockNum = session.getMapper(GoodsMapper.class).selectGoodsSpecPOByGoodsSpecId(goodsDetailId).getStockNum();
+            if (num > stockNum) {
+                addOrderVO.setCode(10000);
+                addOrderVO.setMessage("库存不足");
+                session.rollback();
+                session.close();
+                return addOrderVO;
+            }
             //减少对应规格的对应数量
             maintainStockNum(session, orderPO.getId(), -1 * num);
         }
 
-
-        //VO
-        AddOrderVO addOrderVO = new AddOrderVO();
 
         if (affectedRows == 0) {
             addOrderVO.setCode(10000);
@@ -155,9 +189,24 @@ public class MallOrderServiceImpl implements MallOrderService {
 
     @Override
     public PayVO pay(Integer orderId) {
-        changeOrderState(orderId, 1);
         //VO
         PayVO payVO = new PayVO();
+        SqlSession session = MybatisUtils.openSession();
+        OrderMapper mapper = session.getMapper(OrderMapper.class);
+
+        //检查库存是否足够
+        OrderPO order = mapper.selectOrderById(orderId);
+        Integer stockNum = session.getMapper(GoodsMapper.class).selectGoodsSpecPOByGoodsSpecId(order.getSpecId()).getStockNum();
+        if (order.getNumber() > stockNum) {
+            payVO.setCode(10000);
+            payVO.setMessage("库存不足");
+            session.rollback();
+            session.close();
+            return payVO;
+        }
+
+        changeOrderState(orderId, 1);
+
         payVO.setCode(0);
 
         return payVO;
@@ -167,6 +216,7 @@ public class MallOrderServiceImpl implements MallOrderService {
         //mapper
         SqlSession session = MybatisUtils.openSession();
         OrderMapper mapper = session.getMapper(OrderMapper.class);
+
         //更新订单状态
         OrderPO orderPO = new OrderPO();
         orderPO.setId(orderId);

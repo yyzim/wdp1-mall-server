@@ -39,7 +39,7 @@
         where email = #{email}
     </select>
 
-    <insert id="insertUserByUserPO" useGeneratedKeys="true" keyProperty="id" >
+    <insert id="insertUserByUserPO" useGeneratedKeys="true" keyProperty="id">
         insert into user(id, email, nickname, pwd, recipient, address, phone)
         values (#{userPO.id}, #{userPO.email}, #{userPO.nickname}, #{userPO.pwd}, #{userPO.recipient},
                 #{userPO.address}, #{userPO.phone})
@@ -50,4 +50,26 @@
         from user
         where nickname = #{nickname}
     </select>
+
+    <update id="updateUserWithUserPO">
+        update user
+        <set>
+            <if test="userPO.nickname != null">
+                nickname=#{userPO.nickname},
+            </if>
+            <if test="userPO.recipient != null">
+                recipient=#{userPO.recipient},
+            </if>
+            <if test="userPO.address != null">
+                address=#{userPO.address},
+            </if>
+            <if test="userPO.phone != null">
+                phone=#{userPO.phone},
+            </if>
+            <if test="userPO.pwd != null">
+                pwd=#{userPO.pwd},
+            </if>
+        </set>
+        where id = #{userPO.id}
+    </update>
 </mapper>

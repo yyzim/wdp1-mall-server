@@ -162,4 +162,34 @@
         set stock_num = (stock_num + (#{number}))
         where id = #{specId};
     </update>
+
+    <update id="updateGoodsByGoodsPO">
+        update goods
+        <set>
+            <if test="goodsPO.img != null">
+                img = #{goodsPO.img},
+            </if>
+            <if test="goodsPO.name != null">
+                name = #{goodsPO.name},
+            </if>
+            <if test="goodsPO.description != null">
+                description = #{goodsPO.description},
+            </if>
+            <if test="goodsPO.price != null">
+                price = #{goodsPO.price},
+            </if>
+            <if test="goodsPO.typeId != null">
+                type_id = #{goodsPO.typeId},
+            </if>
+        </set>
+        where id = #{goodsPO.id}
+    </update>
+
+    <insert id="insertGoodsIntoTableGoodsDe">
+        insert into goods_de(id, img, name, price, type_id, description)
+        values (#{goodsPO.id}, #{goodsPO.img}, #{goodsPO.name}, #{goodsPO.price}, #{goodsPO.typeId},
+                #{goodsPO.description})
+    </insert>
+
+
 </mapper>

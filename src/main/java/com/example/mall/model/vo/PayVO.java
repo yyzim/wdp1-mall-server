@@ -14,4 +14,5 @@ import lombok.NoArgsConstructor;
 public class PayVO {
 
     private Integer code;
+    private String message;
 }
