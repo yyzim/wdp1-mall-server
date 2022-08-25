@@ -55,8 +55,29 @@ public class GoodsServlet extends HttpServlet {
             noReplyMsg(req, resp);
         } else if ("repliedMsg".equals(targetResource)) {
             repliedMsg(req, resp);
+        } else if ("deleteType".equals(targetResource)) {
+            deleteType(req, resp);
+        } else if ("getGoodsByTypeAndPage".equals(targetResource)) {
+            getGoodsByTypeAndPage(req, resp);
         }
 
+    }
+
+    private void getGoodsByTypeAndPage(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Integer typeId = Integer.parseInt(req.getParameter("typeId"));
+        Integer page = Integer.parseInt(req.getParameter("page"));
+        Integer size = Integer.parseInt(req.getParameter("size"));
+        //根据typeId去数据库取出数据
+        GetGoodsByTypeVO goodsByType = goodsService.getGoodsByTypeAndPage(typeId, page, size);
+        //响应
+        resp.getWriter().println(gson.toJson(goodsByType));
+
+    }
+
+    private void deleteType(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Integer typeId = Integer.parseInt(req.getParameter("typeId"));
+        DeleteTypeVO deleteTypeVO = goodsService.deleteType(typeId);
+        resp.getWriter().println(gson.toJson(deleteTypeVO));
     }
 
     private void repliedMsg(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -130,7 +151,15 @@ public class GoodsServlet extends HttpServlet {
             addSpec(req, resp);
         } else if ("deleteSpec".equals(targetResource)) {
             deleteSpec(req, resp);
+        } else if ("getGoods".equals(targetResource)) {
+            getGoods(req, resp);
         }
+    }
+
+    private void getGoods(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        GetGoodsBO getGoodsBO = ParseUtils.parseToBO(req, GetGoodsBO.class);
+        GetGoodsVO getGoodsVO = goodsService.getGoods(getGoodsBO);
+        resp.getWriter().println(gson.toJson(getGoodsVO));
     }
 
     private void deleteSpec(HttpServletRequest req, HttpServletResponse resp) throws IOException {

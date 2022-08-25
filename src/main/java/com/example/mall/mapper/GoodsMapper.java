@@ -72,4 +72,17 @@ public interface GoodsMapper {
     Double selectSpecPriceFromGoodsSpecDeById(@Param("specId") Integer specId);
 
     GoodsSpecPO selectGoodsSpecPOFromDeByGoodsSpecId(@Param("specId") Integer specId);
+
+    Integer deleteGoodsTypeByTypeId(@Param("typeId") Integer typeId);
+
+    List<GoodsPO> selectGoodsFromTableGoodsByTypeIdWithPagesize(@Param("typeId") Integer typeId, @Param("offset") Integer offset, @Param("size") Integer size);
+
+    Integer selectGoodsNumByTypeId(@Param("typeId") Integer typeId);
+
+    List<Integer> selectGoodsTypeId();
+
+
+    List<GoodsPO> selectGoodsListByKeywordWithPage(@Param("keyword") String keyword, @Param("pagesize") Integer pagesize, @Param("offset") Integer offset);
+
+    Integer selectGoodsNumByKeyword(@Param("keyword") String keyword);
 }

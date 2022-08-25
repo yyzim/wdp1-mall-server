@@ -55,7 +55,8 @@ public class MallFilter implements Filter {
 
         if (!"OPTIONS".equals(method)) {
 
-            if (StringUtils.contains(requestURI, "/api/mall/user/")) {
+            if (StringUtils.contains(requestURI, "/api/mall/user/") ||
+                    StringUtils.contains(requestURI, "/api/mall/order/")) {
                 if (!("/api/mall/user/login".equals(requestURI)
                         || "/api/mall/user/signup".equals(requestURI))) {
                     //做一个权限控制，看当前已经登陆

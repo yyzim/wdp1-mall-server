@@ -2,6 +2,8 @@ package com.example.mall.controller;
 
 
 import com.example.mall.model.bo.AskGoodsMsgBO;
+import com.example.mall.model.bo.GetGoodsByTypeBO;
+import com.example.mall.model.bo.SearchGoodsBO;
 import com.example.mall.model.vo.*;
 import com.example.mall.service.MallGoodsService;
 import com.example.mall.service.MallGoodsServiceImpl;
@@ -33,6 +35,10 @@ public class MallGoodsServlet extends HttpServlet {
         String targetResource = ParseUtils.parseURIToTargetResource(req);
         if ("askGoodsMsg".equals(targetResource)) {
             askGoodsMsg(req, resp);
+        } else if ("getGoodsByType".equals(targetResource)) {
+            getGoodsByType(req, resp);
+        } else if ("searchGoods".equals(targetResource)) {
+            searchGoods(req, resp);
         }
     }
 
@@ -60,9 +66,20 @@ public class MallGoodsServlet extends HttpServlet {
             getGoodsInfo(req, resp);
         } else if ("getGoodsComment".equals(targetResource)) {
             getGoodsComment(req, resp);
+        } else if ("getIndexGoodsByType".equals(targetResource)) {
+            getIndexGoodsByType(req, resp);
         }
 
 
+    }
+
+    private void getIndexGoodsByType(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //解析参数
+        Integer typeId = Integer.parseInt(req.getParameter("typeId"));
+        //service
+        GetGoodsByTypeVO getGoodsByTypeVO = mallGoodsService.getIndexGoodsByType(typeId);
+        //响应
+        resp.getWriter().println(gson.toJson(getGoodsByTypeVO));
     }
 
     private void getGoodsComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -93,20 +110,33 @@ public class MallGoodsServlet extends HttpServlet {
     }
 
     private void searchGoods(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        //解析参数
-        String keyword = req.getParameter("keyword");
-        //service
-        MallSearchGoodsVO mallSearchGoodsVO = mallGoodsService.searchGoods(keyword);
-        //响应
-        resp.getWriter().println(gson.toJson(mallSearchGoodsVO));
+        if ("GET".equals(req.getMethod())) {
+            //解析参数
+            String keyword = req.getParameter("keyword");
+            //service
+            MallSearchGoodsVO mallSearchGoodsVO = mallGoodsService.searchGoods(keyword);
+            //响应
+            resp.getWriter().println(gson.toJson(mallSearchGoodsVO));
+        } else if ("POST".equals(req.getMethod())) {
+            SearchGoodsBO searchGoodsBO = ParseUtils.parseToBO(req, SearchGoodsBO.class);
+            GetGoodsVO goodsVO = mallGoodsService.searchGoodsWithPage(searchGoodsBO);
+            resp.getWriter().println(gson.toJson(goodsVO));
+        }
     }
 
     private void getGoodsByType(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        //解析参数
-        Integer typeId = Integer.parseInt(req.getParameter("typeId"));
-        //service
-        GetGoodsByTypeVO getGoodsByTypeVO = mallGoodsService.getGoodsByType(typeId);
-        //响应
-        resp.getWriter().println(gson.toJson(getGoodsByTypeVO));
+        if ("GET".equals(req.getMethod())) {
+            //解析参数
+            Integer typeId = Integer.parseInt(req.getParameter("typeId"));
+            //service
+            GetGoodsByTypeVO getGoodsByTypeVO = mallGoodsService.getGoodsByType(typeId);
+            //响应
+            resp.getWriter().println(gson.toJson(getGoodsByTypeVO));
+        } else if ("POST".equals(req.getMethod())) {
+            GetGoodsByTypeBO getGoodsByTypeBO = ParseUtils.parseToBO(req, GetGoodsByTypeBO.class);
+            GetGoodsByTypeWithPageVO getGoodsByTypeWithPageVO = mallGoodsService.getGoodsByTypeWithPage(getGoodsByTypeBO);
+            resp.getWriter().println(gson.toJson(getGoodsByTypeWithPageVO));
+        }
+
     }
 }

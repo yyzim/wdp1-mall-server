@@ -212,4 +212,47 @@
         from goods_spec_de
         where id = #{specId}
     </select>
+
+    <delete id="deleteGoodsTypeByTypeId">
+        delete
+        from goods_type
+        where id =
+              #{typeId}
+    </delete>
+
+    <select id="selectGoodsFromTableGoodsByTypeIdWithPagesize" resultType="com.example.mall.model.po.GoodsPO">
+        select id, img, name, price, type_id as typeId
+        from goods
+        <where>
+            <if test="typeId != -1">
+                type_id = #{typeId}
+            </if>
+        </where>
+        limit #{size} offset #{offset}
+    </select>
+
+    <select id="selectGoodsNumByTypeId" resultType="java.lang.Integer">
+        select count(*)
+        from goods
+        where type_id = #{typeId}
+    </select>
+
+    <select id="selectGoodsTypeId" resultType="java.lang.Integer">
+        select id
+        from goods_type
+    </select>
+
+    <select id="selectGoodsListByKeywordWithPage" resultType="com.example.mall.model.po.GoodsPO">
+        select id, img, name, description, price, type_id as typeId
+        from goods
+        where name like "%"#{keyword}"%"
+            limit #{pagesize}
+        offset #{offset}
+    </select>
+
+    <select id="selectGoodsNumByKeyword" resultType="java.lang.Integer">
+        select count(*)
+        from goods
+        where name like "%"#{keyword}"%"
+    </select>
 </mapper>

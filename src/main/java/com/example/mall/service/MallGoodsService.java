@@ -1,6 +1,8 @@
 package com.example.mall.service;
 
 import com.example.mall.model.bo.AskGoodsMsgBO;
+import com.example.mall.model.bo.GetGoodsByTypeBO;
+import com.example.mall.model.bo.SearchGoodsBO;
 import com.example.mall.model.vo.*;
 
 /**
@@ -21,4 +23,10 @@ public interface MallGoodsService {
     GetGoodsCommentVO getGoodsComment(Integer goodsId);
 
     AskGoodsMsgVO askGoodsMsg(AskGoodsMsgBO askGoodsMsgBO);
+
+    GetGoodsByTypeVO getIndexGoodsByType(Integer typeId);
+
+    GetGoodsByTypeWithPageVO getGoodsByTypeWithPage(GetGoodsByTypeBO getGoodsByTypeBO);
+
+    GetGoodsVO searchGoodsWithPage(SearchGoodsBO searchGoodsBO);
 }

@@ -66,7 +66,8 @@ public class GoodsServiceImpl implements GoodsService {
         List<GetGoodsByTypeVO.DataDTO> data = new ArrayList<>();
         for (GoodsPO goodsPO : goodsPOList) {
             //根据goodsId获取库存
-            Integer stockNum = mapper.selectStockNumFromTableGoodsSpecByGoodsId(goodsPO.getId());
+            Integer stockNum = null;
+            stockNum = mapper.selectStockNumFromTableGoodsSpecByGoodsId(goodsPO.getId());
             data.add(new GetGoodsByTypeVO.DataDTO(goodsPO.getId(), goodsPO.getImg(), goodsPO.getName(), goodsPO.getPrice(), goodsPO.getTypeId(), stockNum));
         }
         getGoodsByTypeVO.setData(data);
@@ -437,5 +438,81 @@ public class GoodsServiceImpl implements GoodsService {
 
 
         return addSpecVO;
+    }
+
+    @Override
+    public DeleteTypeVO deleteType(Integer typeId) {
+        DeleteTypeVO deleteTypeVO = new DeleteTypeVO();
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
+        Integer affectedRows = goodsMapper.deleteGoodsTypeByTypeId(typeId);
+        if (affectedRows > 0) {
+            deleteTypeVO.setCode(0);
+            session.commit();
+        } else {
+            deleteTypeVO.setCode(10000);
+            deleteTypeVO.setMessage("删除失败");
+            session.rollback();
+        }
+        session.close();
+        return deleteTypeVO;
+    }
+
+    @Override
+    public GetGoodsByTypeVO getGoodsByTypeAndPage(Integer typeId, Integer page, Integer size) {
+        //mapper
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper mapper = session.getMapper(GoodsMapper.class);
+
+        Integer offset = (page - 1) * size;
+        //根据typeID获取商品
+        List<GoodsPO> goodsPOList = mapper.selectGoodsFromTableGoodsByTypeIdWithPagesize(typeId, offset, size);
+        //封装进VO
+        GetGoodsByTypeVO getGoodsByTypeVO = new GetGoodsByTypeVO();
+        getGoodsByTypeVO.setCode(0);
+        List<GetGoodsByTypeVO.DataDTO> data = new ArrayList<>();
+        for (GoodsPO goodsPO : goodsPOList) {
+            //根据goodsId获取库存
+            Integer stockNum = null;
+            stockNum = mapper.selectStockNumFromTableGoodsSpecByGoodsId(goodsPO.getId());
+            data.add(new GetGoodsByTypeVO.DataDTO(goodsPO.getId(), goodsPO.getImg(), goodsPO.getName(), goodsPO.getPrice(), goodsPO.getTypeId(), stockNum));
+        }
+        getGoodsByTypeVO.setData(data);
+        session.close();
+
+        return getGoodsByTypeVO;
+
+    }
+
+    @Override
+    public GetGoodsVO getGoods(GetGoodsBO getGoodsBO) {
+        Integer typeId = getGoodsBO.getId();
+        Integer currentPage = getGoodsBO.getCurrentPage();
+        Integer pagesize = getGoodsBO.getPagesize();
+
+        SqlSession session = MybatisUtils.openSession();
+        GoodsMapper goodsMapper = session.getMapper(GoodsMapper.class);
+
+        List<GoodsPO> goodsPOList = goodsMapper.selectGoodsFromTableGoodsByTypeIdWithPagesize(typeId, (currentPage - 1) * pagesize, pagesize);
+
+        List<GetGoodsVO.DataDTO.GoodsDTO> goodsDTOList = new ArrayList<>();
+        for (GoodsPO goodsPO : goodsPOList) {
+            //根据goodsId获取库存
+            Integer stockNum = null;
+            stockNum = goodsMapper.selectStockNumFromTableGoodsSpecByGoodsId(goodsPO.getId());
+            goodsDTOList.add(new GetGoodsVO.DataDTO.GoodsDTO(goodsPO.getId(), goodsPO.getImg(), goodsPO.getName(), goodsPO.getPrice(), goodsPO.getTypeId(), stockNum));
+        }
+
+        GetGoodsVO getGoodsVO = new GetGoodsVO();
+        getGoodsVO.setCode(0);
+
+        Integer total = goodsMapper.selectGoodsNumByTypeId(typeId);
+
+        GetGoodsVO.DataDTO dataDTO = new GetGoodsVO.DataDTO(total, goodsDTOList);
+
+        getGoodsVO.setData(dataDTO);
+
+
+        return getGoodsVO;
     }
 }

@@ -39,4 +39,10 @@ public interface GoodsService {
     ReplyVO reply(ReplyBO replyBO);
 
     AddSpecVO addSpec(AddSpecBO addSpecBO);
+
+    DeleteTypeVO deleteType(Integer typeId);
+
+    GetGoodsByTypeVO getGoodsByTypeAndPage(Integer typeId, Integer page, Integer size);
+
+    GetGoodsVO getGoods(GetGoodsBO getGoodsBO);
 }
